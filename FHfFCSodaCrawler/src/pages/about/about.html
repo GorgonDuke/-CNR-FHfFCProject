@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      OpenData salvati
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+ <button ion-button color="primary" (click)="aggiorna()" full>Aggiorna</button>
+  <ion-list [virtualScroll]="items" [approxItemHeight]="'50px'">
+    <button ion-item *virtualItem="let item" (click)="clickTipo($event, item)">
+      <ion-label>{{item.endPoint.description}}</ion-label>
+    </button>
+  </ion-list>
+
+</ion-content>

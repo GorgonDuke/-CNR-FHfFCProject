@@ -1,0 +1,16 @@
+page-visualize-generic {
+    pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+    .string { color: black; }
+    .number { color: darkgreen; }
+    .boolean { color: blue; }
+    .null { color: magenta; }
+    .key { color: blue; }
+    
+   
+    .break-word {
+        width:200px;
+        outline: 1px solid #ccc; padding: 5px; margin: 5px;
+        
+    }
+   
+}

@@ -1,0 +1,41 @@
+page-list {
+
+
+  .column {
+    float: left;
+    width: 50px;
+    text-align: center;
+    font-size: large;
+    // text-shadow: 2px 2px 4px #000000;
+    // margin-top: 5px;
+  }
+
+  .column3 {
+    float: left;
+    width: 50px;
+    text-align: center;
+    border: 1px solid grey; 
+     
+  }
+
+  .numero {
+    position: relative;
+    float: left;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .column2 {
+    float: left;
+    width: 60%;
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+  .row:after {
+    width: 100%;
+    content: "";
+    display: table;
+    clear: both;
+  }
+}

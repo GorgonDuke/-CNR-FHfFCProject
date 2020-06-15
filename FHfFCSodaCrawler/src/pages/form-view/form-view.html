@@ -1,0 +1,74 @@
+<!--
+  Generated template for the FormViewPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>ANNUNCIO</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-item *ngIf="formmodel.active">
+    <button ion-button color="danger" (click)="buttonTapped()" full>Elimina</button>
+  </ion-item>
+
+  <ion-item *ngIf="!formmodel.active">
+    <button ion-button color="secondary" (click)="riattiva()" full>Riattiva</button>
+  </ion-item>
+
+  <ion-item>
+    <img *ngIf="imageFileName" [src]="imageFileName" width="300" />
+    <!-- <img src="{{imageFileName}}" *ngIf="imageFileName" alt="Ionic File" width="300" /> -->
+  </ion-item>
+
+
+  <ion-item>
+    <ion-label color="primary" stacked>Il servizio che si desidera offrire : </ion-label>
+    <ion-label>{{formmodel.tipoOfferta}}</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label color="primary" stacked>Organizzazione</ion-label>
+    <ion-label>{{formmodel.organizzazione}}</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label color="primary" stacked>Descrizione</ion-label>
+    <ion-label>{{formmodel.descrizione}}</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <p class="testo">
+      Area in cui si desidera offrire servizio
+    </p>
+
+  </ion-item>
+
+  <div id="map" style="width:100%; height:30%;border-style: groove;"></div>
+
+  <ion-item>
+    <ion-label color="primary" stacked>Indirizzo </ion-label>
+  </ion-item>
+  <ion-item text-wrap>
+    <p>{{formmodel.indirizzo.via}}</p>
+    <p>{{formmodel.indirizzo.citta}}</p>
+    <p>{{formmodel.indirizzo.cap}}</p>
+
+  </ion-item>
+
+  <ion-item>
+    <ion-label color="primary" stacked>Area in cui si offrre il servizio </ion-label>
+    <ion-label>{{formmodel.raggio}}</ion-label>
+
+  </ion-item>
+
+
+
+</ion-content>

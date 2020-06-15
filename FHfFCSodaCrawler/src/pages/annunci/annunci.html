@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>FHfFC I miei annunci</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+
+
+
+  <ion-list>
+    <button ion-item *ngFor="let item of items" (click)="itemTapped(item)">
+      <ion-avatar item-start>
+
+        <img width="10" height="10" *ngIf="item.tutto.active" src="assets/imgs/8.png" />
+        <img width="10" height="10" *ngIf="!item.tutto.active" src="assets/imgs/19.png" />
+      </ion-avatar>-
+      {{item.title}}
+      <!-- <ion-label>{{item.data}}</ion-label> -->
+     
+
+        <!-- </ion-item> -->
+    </button>
+  </ion-list>
+</ion-content>

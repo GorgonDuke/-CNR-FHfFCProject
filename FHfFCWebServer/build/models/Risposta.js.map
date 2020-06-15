@@ -1,0 +1,1 @@
+{"version":3,"file":"Risposta.js","sourceRoot":"","sources":["../../src/models/Risposta.ts"],"names":[],"mappings":";;AAAA;IAOI,YAAY,MAAc,EAAE,KAAe,EAAE,KAAc;QACvD,IAAI,CAAC,IAAI,GAAG,IAAI,IAAI,EAAE,CAAC;QACvB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,MAAM,GAAG,KAAK,CAAC;IACxB,CAAC;CAEJ;AAdD,4BAcC"}

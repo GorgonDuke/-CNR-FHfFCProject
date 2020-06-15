@@ -1,0 +1,83 @@
+<!--
+  Generated template for the RisultatiPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>FHfFC App</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <div class="rowb">
+    <div class="columnb" [style.width]="stilew"    >
+
+        <div #map id="map" [style.height]="stile" class="mappaBordo" ></div>
+        <ion-item *ngIf="isApp">
+            <button ion-button color="primary" *ngIf="score" (click)="ordinaDistanza()" full>
+                <ion-icon name="repeat"></ion-icon>Ordina per Distanza</button>
+            <button ion-button color="primary" *ngIf="!score" (click)="ordinaScore()" full>
+                <ion-icon name="repeat"></ion-icon>Ordina per Pertinenza</button>
+          </ion-item>1
+
+          <ion-list *ngIf="isApp">
+            <button ion-item *ngFor="let item of items; let i = index"    (click)="itemTapped($event, item)">
+              <!-- <ion-checkbox [(ngModel)]="item.conferma" (click)="itemTapped($event, item)" ></ion-checkbox> -->
+
+              <div class="row">
+                <div class="column" [style.background-color]="item.color">
+                  <h1 class="numero" >{{i}}</h1>
+                </div>
+                <div class="column2">
+                  <h3>{{item.human_desc}}</h3>
+                  <p>{{item.human_name}}</p>
+                  <p>{{item.distance}} Km - Rilevanza: {{item.score}}</p>
+
+                </div>
+              </div>
+
+
+
+            </button>
+          </ion-list>
+    </div>
+    <div class="columnb" *ngIf="!isApp" [style.width]="stilew2" >
+        <ion-item>
+            <button ion-button color="primary" *ngIf="score" (click)="ordinaDistanza()" full>Ordina per Distanza</button>
+            <button ion-button color="primary" *ngIf="!score" (click)="ordinaScore()" full>Ordina per Pertinenza</button>
+          </ion-item>
+
+          <ion-list>
+            <button ion-item *ngFor="let item of items; let i = index" (click)="itemTapped($event, item)">
+              <!-- <ion-checkbox [(ngModel)]="item.conferma" (click)="itemTapped($event, item)" ></ion-checkbox> -->
+
+              <div class="row">
+                <div class="column" [style.background-color]="item.color">
+                  <h1 class="numero" >{{i}}</h1>
+                </div>
+                <div class="column2">
+                  <h3>{{item.human_desc}}</h3>
+                  <p>{{item.human_name}}</p>
+                  <p>{{item.distance}} Km - Rilevanza: {{item.score}}</p>
+
+                </div>
+              </div>
+
+
+
+            </button>
+          </ion-list>
+    </div>
+  </div>
+
+
+
+
+</ion-content>

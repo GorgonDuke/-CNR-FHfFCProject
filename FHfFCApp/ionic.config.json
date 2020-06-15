@@ -1,0 +1,8 @@
+{
+  "name": "FHfFCApp",
+  "app_id": "4fe76c49",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}

@@ -1,0 +1,154 @@
+<!--
+  Generated template for the IscrizionePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>FHfFC App</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h3 class="testo">Inserisci i tuoi dati</h3>
+  <ion-item>
+    <p class="testo">
+      Tutti i campi sono obbligatori
+    </p>
+  </ion-item>
+
+  <ion-item>
+    <ion-label color="primary" stacked>Email *</ion-label>
+    <ion-input type="email" placeholder="Inserire la propria email" [(ngModel)]="account.email" ></ion-input>
+  </ion-item>
+  <ion-item  *ngIf="!verifica">
+    <ion-label color="primary" stacked>Telefono</ion-label>
+    <ion-input type="tel" placeholder="Inserire il telefono" [(ngModel)]="account.telefono"></ion-input>
+  </ion-item >
+  <ion-item  *ngIf="!verifica">
+    <ion-label color="primary" stacked>Nome * </ion-label>
+    <ion-input placeholder="Inserire il telefono" [(ngModel)]="account.nome"  ></ion-input>
+  </ion-item>
+  <ion-item  *ngIf="!verifica">
+    <ion-label color="primary" stacked>Cognome * </ion-label>
+    <ion-input placeholder="Inserire il telefono" [(ngModel)]="account.cognome"  ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary" stacked>Password * </ion-label>
+    <ion-input  type="password"  [(ngModel)]="account.password"  ></ion-input>
+  </ion-item>
+  <ion-item  *ngIf="!verifica">
+    <ion-label color="primary" stacked>Conferma Password * </ion-label>
+    <ion-input type="password" [(ngModel)]="confermaPassoword"  ></ion-input>
+  </ion-item>
+  <ion-item  *ngIf="!verifica">
+    <p class="testo">
+      Desideri privilegiare le ricerche
+    </p>
+    <p class="testo">
+      che riguardano prevalentemente:
+    </p>
+  </ion-item>
+  <ion-list radio-group [(ngModel)]="account.tipo" *ngIf="!verifica">
+    <ion-item>
+      <ion-label>ANZIANI</ion-label>
+      <ion-radio value="ANZIANI" checked></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>BAMBINI</ion-label>
+      <ion-radio value="BAMBINI" checked></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>DISABILI</ion-label>
+      <ion-radio value="DISABILI" checked></ion-radio>
+    </ion-item>
+  </ion-list>
+
+  <div style="width: 80% ; margin-left: auto; margin-right: auto; " *ngIf="!verifica">
+    <h3>Informativa sul trattamento dei dati personali :</h3>
+    <textarea rows="4" style="width: 100%; ">
+      Informazioni importanti
+      
+      Il presente sito tratta i dati prevalentemente in base al consenso degli utenti. Con l'uso o la consultazione del sito i visitatori e gli utenti approvano la presente informativa privacy e acconsentono al trattamento dei loro dati personali in relazione alle modalità e alle finalità di seguito descritte, compreso l'eventuale diffusione a terzi se necessaria per l'erogazione di un servizio. Tramite i moduli di comunicazione o di richiesta di servizi vengono raccolti ulteriori consensi relativi alla finalità specifica del servizio.
+      
+      Il conferimento dei dati e quindi il consenso alla raccolta e al trattamento dei dati è facoltativo, l'Utente può negare il consenso, e può revocare in qualsiasi momento un consenso già fornito. Tuttavia negare il consenso può comportare l'impossibilità di erogare alcuni servizi e l'esperienza di navigazione nel sito sarebbe compromessa.  
+      
+      I dati per la sicurezza del sito e per la prevenzione da abusi e SPAM, nonché i dati per l’analisi del traffico del sito (statistica) in forma aggregata, sono trattati in base al legittimo interesse del Titolare del trattamento alla tutela del sito e degli utenti stessi. In tali casi l'utente ha sempre il diritto di opporsi al trattamento dei dati (vedi par. Diritti dell'utente). 
+      
+       
+      
+      Finalità del trattamento
+      utilizzo informazioni
+      
+      Il trattamento dei dati raccolti dal sito, oltre alle finalità connesse, strumentali e necessarie alla fornitura del servizio, è volto alle seguenti finalità:
+      
+      – Statistica (analisi)
+      Raccolta di dati e informazioni in forma esclusivamente aggregata e anonima al fine di verificare il corretto funzionamento del sito. Nessuna di queste informazioni è correlata alla persona fisica-Utente del sito, e non ne consentono in alcun modo l'identificazione. Non occorre il consenso. 
+      
+      – Sicurezza
+      Raccolta di dati e informazioni al fine di tutelare la sicurezza del sito (filtri antispam, firewall, rilevazione virus) e degli Utenti e per prevenire o smascherare frodi o abusi a danno del sito web. I dati sono registrati automaticamente e possono eventualmente comprendere anche dati personali (indirizzo Ip) che potrebbero essere utilizzati, conformemente alle leggi vigenti in materia, al fine di bloccare tentativi di danneggiamento al sito medesimo o di recare danno ad altri utenti, o comunque attività dannose o costituenti reato. Tali dati non sono mai utilizzati per l'identificazione o la profilazione dell'Utente e vengono cancellati periodicamente. Non occorre il consenso. 
+      
+       
+      
+      Dati raccolti
+      informazioni raccolte
+      
+      Il presente sito raccoglie dati degli utenti in due modi.
+      
+      - Dati raccolti in maniera automatizzata
+      Durante la navigazione degli Utenti possono essere raccolte le seguenti informazioni che vengono conservate nei file di log del server (hosting) del sito: 
+      - indirizzo internet protocol (IP);
+      - tipo di browser;
+      - parametri del dispositivo usato per connettersi al sito;
+      - nome dell'internet service provider (ISP);
+      - data e orario di visita;
+      - pagina web di provenienza del visitatore (referral) e di uscita;
+      - eventualmente il numero di click.
+      
+      Questi dati sono utilizzati a fini di statistica e analisi, in forma esclusivamente aggregata. 
+      
+      - Dati conferiti volontariamente
+      
+      Il sito può raccogliere altri dati in caso di utilizzo volontario di servizi da parte degli utenti, quali servizi di commenti e verranno utilizzati esclusivamente per l'erogazione del servizio richiesto: 
+      - nome; 
+      - indirizzo email.
+      
+        
+      
+      Luogo del trattamento
+      I dati raccolti dal sito sono trattati presso la sede del Titolare del Trattamento, e presso il datacenter del web Hosting (CNR IREA), che è responsabile del trattamento dei dati, elaborando i dati per conto del titolare, si trova nello Spazio Economico Europeo e agisce in conformità delle norme europee.
+      
+       
+      
+      Periodo di conservazione dei dati
+      I dati raccolti dal sito durante il suo funzionamento sono conservati per il tempo strettamente necessario a svolgere le attività precisate. Alla scadenza i dati saranno cancellati o anonimizzati, a meno che non sussistano ulteriori finalità per la conservazione degli stessi.
+      
+      I dati (indirizzo IP) utilizzati a fini di sicurezza del sito (blocco tentativi di danneggiare il sito) sono conservati per 30 giorni. 
+      I dati per finalità di analytics (statistica) sono conservati in forma aggregata per 24 mesi. </textarea>
+  </div>
+  <ion-item *ngIf="!verifica">
+    <ion-label>Accetto : </ion-label>
+    <ion-checkbox [(ngModel)]="privacy"></ion-checkbox>
+  </ion-item>
+
+  <ion-item *ngIf="!esiste && !verifica">
+    <button ion-button color="primary"  (click)="invia()" full>Invia</button>
+  </ion-item>
+  <ion-item *ngIf="!esiste && !verifica" >
+    <button ion-button color="primary"  (click)="verificaI1()" full>Sei già iscritto ?</button>
+  </ion-item>
+  <ion-item  *ngIf="!esiste && verifica">
+    <button ion-button color="primary" (click)="verificaI2()" full>Invia</button>
+  </ion-item>
+
+  <ion-item  *ngIf="esiste && !verifica" >
+    <button ion-button color="primary" (click)="modifica()" full>Modifica</button>
+  </ion-item>
+  <ion-item *ngIf="esiste && !verifica" >
+    <button ion-button color="danger"  (click)="rimuoviaccount()" full>Cancella il tuo account</button>
+  </ion-item>
+</ion-content>

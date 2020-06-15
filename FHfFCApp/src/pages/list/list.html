@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Cerca una risorsa</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-input [(ngModel)]="testo" placeholder="Scrivi cosa cercare ... ">disabile</ion-input>
+
+  <button ion-button full (click)="buttonTapped()">Cerca &nbsp;&nbsp;
+    <ion-icon name="search"></ion-icon>
+  </button>
+
+  <button ion-button full (click)="avanzataTapped()" color="secondary">Opzioni Avanzate Ricerca &nbsp;&nbsp;
+    <ion-icon name="cog"></ion-icon>
+  </button>
+
+  <ion-item *ngIf="avanzata">
+    <ion-label>Distanza (Km)</ion-label>
+    <ion-input [(ngModel)]="distanza"></ion-input>
+  </ion-item>
+
+
+  <ion-list radio-group [(ngModel)]="tipoRicerca" (ionChange)="tipoTapped()" *ngIf="avanzata">
+    <ion-item>
+      <ion-label>Localizzazione GPS/Rete </ion-label>
+      <ion-radio value="GPS" checked></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Un altro indirizzo</ion-label>
+      <ion-radio value="INDIRIZZO" checked></ion-radio>
+    </ion-item>
+  </ion-list>
+  <ion-item *ngIf="visualizzaIndirizzo && avanzata">
+    <ion-label color="primary" stacked>Indirizzo *</ion-label>
+    <ion-input placeholder="Inserire l'indirizzo" [(ngModel)]="indirizzo.via"></ion-input>
+  </ion-item>
+  <ion-item *ngIf="visualizzaIndirizzo && avanzata">
+    <ion-label color="primary" stacked>Citt&agrave; o paese *
+    </ion-label>
+    <ion-input placeholder="Inserire la citt&agrave; o paese" [(ngModel)]="indirizzo.citta"></ion-input>
+  </ion-item>
+  <ion-item *ngIf="visualizzaIndirizzo && avanzata">
+    <ion-label color="primary" stacked>Cap *
+    </ion-label>
+    <ion-input placeholder="Inserire il C.A.P." [(ngModel)]="indirizzo.cap"></ion-input>
+  </ion-item>
+
+
+  <!-- <ion-list [virtualScroll]="items" [approxItemHeight]="'50px'"> -->
+
+
+
+  <!-- 
+      <ion-label>{{item.title}}</ion-label>
+    </button> -->
+
+
+  <!-- <ion-checkbox class="column" [(ngModel)]="item.conferma" (click)="itemTapped($event, item); $event.stopPropagation()"></ion-checkbox> -->
+  <ion-list>
+    <button ion-item *ngFor="let item of items; let i = index" (click)="firefoxTapped($event, item)">
+      <div class="row">
+        <ion-item class="column">
+          <ion-checkbox class="numero" [(ngModel)]="item.conferma" (click)="itemTapped($event, item); $event.stopPropagation()"></ion-checkbox>
+        </ion-item>
+        <div class="column3" [style.background-color]="item.color">
+            
+          </div>
+        
+        <div class="column2">
+          <h3>{{item.title}}</h3>
+        </div>
+      </div>
+    </button>
+  </ion-list>
+
+  <ion-item>
+    <ion-label color="primary">
+      <p>lat : {{coordinates[1]}}</p>
+      <p>lng : {{coordinates[0]}}</p>
+    </ion-label>
+
+  </ion-item>
+</ion-content>

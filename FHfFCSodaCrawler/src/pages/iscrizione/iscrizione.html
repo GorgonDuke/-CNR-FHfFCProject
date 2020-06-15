@@ -1,0 +1,77 @@
+<!--
+  Generated template for the IscrizionePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>FHfFC App</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <h3 class="testo">Utente Selezionato</h3>
+  <ion-item *ngIf="account.attivo">
+    <button ion-button color="danger"  (click)="rimuoviaccount()" full>RIMUOVI UTENTE</button>
+  </ion-item>
+  <ion-item *ngIf="!account.attivo" >
+    <button ion-button color="secondary"  (click)="riattivaaccount()" full>RIATTIVA UTENTE</button>
+  </ion-item>
+  <ion-item>
+    <button ion-button full (click)="vediAnnunci()">VISUALIZZA ANNUNCI</button>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary" stacked>Email *</ion-label>
+    <ion-input type="email" placeholder="Inserire la propria email" [(ngModel)]="account.email" value="aaaa"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary" stacked>Telefono</ion-label>
+    <ion-input type="tel" placeholder="Inserire il telefono" [(ngModel)]="account.telefono"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary" stacked>Nome * </ion-label>
+    <ion-input placeholder="Inserire il telefono" [(ngModel)]="account.nome" value="aaaa"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary" stacked>Cognome * </ion-label>
+    <ion-input placeholder="Inserire il telefono" [(ngModel)]="account.cognome" value="aaaa"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary" stacked>Password * </ion-label>
+    <ion-input placeholder="Inserire un eventuale organizzazione" [(ngModel)]="account.password" value="aaaa"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary" stacked>Conferma Password * </ion-label>
+    <ion-input placeholder="Inserire un eventuale organizzazione" [(ngModel)]="confermaPassoword" value="aaaa"></ion-input>
+  </ion-item>
+  <ion-item>
+    <p class="testo">
+      PRIVILEGIA RICERCHE RIGUARDO :
+    </p>
+
+  </ion-item>
+  <ion-list radio-group [(ngModel)]="account.tipo">
+    <ion-item>
+      <ion-label>ANZIANI</ion-label>
+      <ion-radio value="ANZIANI" checked></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>BAMBINI</ion-label>
+      <ion-radio value="BAMBINI" checked></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>DISABILI</ion-label>
+      <ion-radio value="DISABILI" checked></ion-radio>
+    </ion-item>
+  </ion-list>
+
+
+
+</ion-content>

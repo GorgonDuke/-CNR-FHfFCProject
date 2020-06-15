@@ -1,0 +1,33 @@
+page-tweets-viewer {
+  pre {
+    outline: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px;
+  }
+  .string {
+    color: black;
+  }
+  .number {
+    color: darkgreen;
+  }
+  .boolean {
+    color: blue;
+  }
+  .null {
+    color: magenta;
+  }
+  .key {
+    color: blue;
+  }
+  .acapo {
+    
+    display: inline-block;
+    overflow-wrap: 2px;
+    word-wrap: break-word;
+    word-break: normal;
+    line-break: strict;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none; // outline: 0px solid #ccc; padding: 5px; margin: 5px;
+  }
+}

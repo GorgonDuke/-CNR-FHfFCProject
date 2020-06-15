@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>FHfFC I miei annunci</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+    
+
+   
+    
+  <ion-list>
+    <button ion-item *ngFor="let item of items"  (click)="itemTapped(item)" >
+     
+      <ion-label >{{item.title}}</ion-label> 
+      <ion-label>{{item.data}}</ion-label>
+       
+      
+    </button>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,45 @@
+{
+  "name": "GeoKeyReader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.0.39",
+    "@types/mongodb": "^3.0.15",
+    "@types/mongoose": "^4.7.24",
+    "@types/node": "^8.0.47",
+    "@types/request": "^2.0.7",
+    "nodemon": "^1.12.1",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "@types/body-parser": "^1.16.8",
+    "@types/mongoose-geojson-schema": "^2.1.1",
+    "@types/multer": "^1.3.6",
+    "@types/q": "^1.0.7",
+    "@types/uuid": "^3.4.3",
+    "basic-auth": "^2.0.0",
+    "body-parser": "^1.18.2",
+    "circle-to-polygon": "^1.0.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "mongodb": "^3.0.7",
+    "mongoose": "^4.12.5",
+    "mongoose-geojson-schema": "^2.1.2",
+    "multer": "^1.3.0",
+    "q": "^1.5.1",
+    "q-": "0.0.0",
+    "request": "^2.83.0",
+    "rxjs": "^6.3.3",
+    "ts-promise": "^0.3.4"
+  }
+}

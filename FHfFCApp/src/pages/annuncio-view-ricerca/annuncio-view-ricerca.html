@@ -1,0 +1,65 @@
+<!--
+  Generated template for the AnnuncioViewRicercaPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  
+    <ion-navbar>
+        <ion-title>Annuncio </ion-title>
+      </ion-navbar>
+    
+    </ion-header>
+    
+    
+    <ion-content padding>
+      
+       
+       
+      <ion-item>
+        <img *ngIf="imageFileName" [src]="imageFileName" width="300" />
+        <!-- <img src="{{imageFileName}}" *ngIf="imageFileName" alt="Ionic File" width="300" /> -->
+      </ion-item>
+    
+      
+    
+      <ion-item>
+        <ion-label color="primary" stacked>Il tipo di servizio offerto : </ion-label>
+
+        <ion-input placeholder="Non disponibile"  readonly="true"  [(ngModel)]="formmodel.tipoOfferta"> </ion-input>
+        
+      </ion-item>
+    
+      <ion-item>
+        <ion-label color="primary" stacked>Organizzazione</ion-label>
+         <ion-input placeholder="Non disponibile"  readonly="true"  [(ngModel)]="formmodel.organizzazione"> </ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label color="primary" stacked>Descrizione</ion-label>
+        <ion-input placeholder="Non disponibile"  readonly="true"  [(ngModel)]="formmodel.descrizione"> </ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <p class="testo">
+          Area in cui si  offre il servizio
+        </p>
+      
+      </ion-item>
+      <div #map id="map" style="height: 30%;border: 1px solid grey; " ></div>
+      <ion-item>
+        <ion-label color="primary" stacked>Indirizzo </ion-label>
+      </ion-item>
+      <ion-item text-wrap>
+        <p>{{formmodel.indirizzo.via}}</p>
+        <p>{{formmodel.indirizzo.citta}}</p>
+        <p>{{formmodel.indirizzo.cap}}</p>
+    
+      </ion-item>
+    
+      
+    
+    </ion-content>
+    

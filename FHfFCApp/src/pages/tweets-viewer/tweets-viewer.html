@@ -1,0 +1,57 @@
+<!--
+  Generated template for the TweetsViewerPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>TweetsViewer</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <!-- <ion-list    [virtualScroll]="items"  [approxItemHeight]="'150px'" >
+        <ion-item *virtualItem="let item" text-wrap>
+          <ion-label>
+    
+            <p>
+              <img [src]="item.profileImageUrl" />:
+              <i>{{item.name}} {{item.createdAt}}</i>
+            </p>
+    
+    
+    
+            <div> {{item.text}} </div>
+    
+    
+    
+          </ion-label>
+    2
+    
+    
+        </ion-item>
+      </ion-list> -->
+
+  <ion-list>
+    <div ion-item *ngFor="let item of items" text-wrap >
+      
+        <!-- <img [src]="item.profileImageUrl" /> -->
+      <p>
+        <i>{{item.name}} {{item.createdAt}}</i>
+      </p>
+
+     
+          {{item.text}}
+      
+
+
+    </div>
+  </ion-list>
+
+</ion-content>

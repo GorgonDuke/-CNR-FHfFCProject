@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Elenco Utenti
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label color="primary" stacked>Ricerca Avanzata email</ion-label>
+    <ion-input (input)="filterItems($event)"></ion-input>
+  </ion-item>
+
+  <ion-item >
+    <button ion-button color="seconday" (click)="refresh()" full round>Aggiorna La Lista</button>
+  </ion-item>
+
+  <ion-grid>
+    <ion-row nowrap>
+      <ion-col col-3 class="headerlista">
+        Email
+      </ion-col>
+      <ion-col col-3 class="headerlista">
+        Nome
+      </ion-col>
+      <ion-col col-3 class="headerlista">
+        Cognome
+      </ion-col>
+      <ion-col col-3 class="headerlista">
+        Attivo
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of items" nowrap (click)="clickElemento(item)" class="colonna">
+      <ion-col col-3>
+        {{item.email}}
+      </ion-col>
+      <ion-col col-3>
+        {{item.nome}}
+      </ion-col>
+      <ion-col col-3>
+        {{item.cognome}}
+      </ion-col>
+      <ion-col col-3>
+        <!-- {{item.attivo}} -->
+        <ion-avatar>
+          <img width="20" height="20" *ngIf="item.attivo" src="assets/imgs/8.png" />
+          <img width="20" height="20" *ngIf="!item.attivo" src="assets/imgs/19.png" />
+        </ion-avatar>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

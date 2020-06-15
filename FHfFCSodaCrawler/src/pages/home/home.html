@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>RICERCA OPEN DATA</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  
+  <button ion-button color="primary" (click)="prendi()" full>Elenco Open Data da Database ( + veloce) </button>
+  
+  <button ion-button color="primary" (click)="download()" full>Scarica Elenco Open Data</button>
+
+  <button ion-button color="primary" (click)="salva()" full>Salva gli Open Data</button>
+
+  
+  
+
+
+  <ion-list  [virtualScroll]="generipage"  [approxItemHeight]="'50px'">
+    <button ion-item *virtualItem="let genere" (click)="clickTipo($event, genere)"   >
+      <ion-label>{{genere}}</ion-label>  
+    </button>
+  </ion-list>
+
+ 
+</ion-content>
