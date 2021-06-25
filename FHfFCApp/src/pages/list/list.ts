@@ -23,7 +23,9 @@ import {
 import { compareTwoStrings } from "string-similarity";
 import { Utente } from "../../models/Utente";
 import { GenericEndPoint } from "../../models/GenericEndPoint";
-
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('ListPage')
+LOGGER.set_level(LogLevel.DEBUG)
 @Component({
   selector: "page-list",
   templateUrl: "list.html"
@@ -71,14 +73,13 @@ export class ListPage {
     this.indirizzo = new IndirizzoModel();
     this.visualizzaIndirizzo = false;
 
-    console.log("--- AGGIORNAMENTO ", new Date());
+
 
     if (this.plt.is("core") || this.plt.is("mobileweb")) {
-      console.log("È UN BROWSER");
+      LOGGER.info("[constructor] È UN BROWSER");
       this.isApp = false;
-      console.log("--------------------------------------");
     } else {
-      console.log("NON È UN BROWSER");
+      LOGGER.info("[constructor] NON È UN BROWSER");
       this.isApp = true;
     }
 
@@ -89,12 +90,9 @@ export class ListPage {
         this.getCountries();
       } else {
         this.account = val;
-        console.log("->", JSON.stringify(this.account));
-
+        LOGGER.info("[constructor] ACCOUNT ", this.account);
         this.getCountries();
-
         this.iscritto = true;
-
         switch (this.account.tipo) {
           case "BAMBINI":
             this.preferenza = "infanzia bambini minori";
@@ -139,15 +137,15 @@ export class ListPage {
   }
 
   tipoTapped() {
-    console.log("-->", this.tipoRicerca);
+    LOGGER.info("[tipoTapped] research type: ", this.tipoRicerca);
     if (this.tipoRicerca == ListPage.INDIRIZZO) {
       this.visualizzaIndirizzo = true;
-      console.log("-->", this.tipoRicerca);
+
     } else {
       if (this.plt.is("core") || this.plt.is("mobileweb")) {
-        console.log("È UN BROWSER");
+        LOGGER.info("È UN BROWSER");
         this.isApp = false;
-        console.log("--------------------------------------");
+
         if (this.b_lat) {
           this.coordinates[0] = this.b_lon;
           this.coordinates[1] = this.b_lat;
@@ -156,7 +154,7 @@ export class ListPage {
           this.coordinates[1] = this.D_LAT;
         }
       } else {
-        console.log("NON È UN BROWSER");
+        LOGGER.info("[tipoTapped] NON È UN BROWSER");
         this.isApp = true;
       }
       this.visualizzaIndirizzo = false;
@@ -168,12 +166,8 @@ export class ListPage {
       if (window.navigator && window.navigator.geolocation) {
         window.navigator.geolocation.getCurrentPosition(
           position => {
-            // this.geolocationPosition = position,
             try {
-              console.log("POSITIO", position);
-              console.log("POSITIO", position.coords.latitude);
-              console.log("POSITIO", position.coords.longitude);
-
+              LOGGER.info("[ionViewDidLoad] A Position:", position);
               this.b_lat = position.coords.latitude;
               this.b_lon = position.coords.longitude;
 
@@ -187,17 +181,17 @@ export class ListPage {
           error => {
             switch (error.code) {
               case 1:
-                console.log("Permission Denied");
+                LOGGER.info("[ionViewDidLoad] A Permission Denied");
                 this.coordinates[0] = 9.223779;
                 this.coordinates[1] = 45.479987;
                 break;
               case 2:
-                console.log("Position Unavailable");
+                LOGGER.info("[ionViewDidLoad] A Position Unavailable");
                 this.coordinates[0] = 9.223779;
                 this.coordinates[1] = 45.479987;
                 break;
               case 3:
-                console.log("Timeout");
+                LOGGER.info("[ionViewDidLoad] A Timeout");
                 this.coordinates[0] = 9.223779;
                 this.coordinates[1] = 45.479987;
                 break;
@@ -205,14 +199,14 @@ export class ListPage {
           }
         );
       } else {
-        console.log("Posizione NON TROVATA WEB");
+        LOGGER.warn("[ionViewDidLoad] A Posizione NON TROVATA WEB");
         this.coordinates[1] = 45.479987;
       }
     } else {
       this.geolocation
         .getCurrentPosition()
         .then(resp => {
-          console.log("Posizione trovata ");
+          LOGGER.info("[ionViewDidLoad] B Posizione trovata ");
           this.coordinates[0] = resp.coords.longitude;
           this.coordinates[1] = resp.coords.latitude;
         })
@@ -222,9 +216,7 @@ export class ListPage {
               position => {
                 // this.geolocationPosition = position,
                 try {
-                  console.log("POSITIO", position);
-                  console.log("POSITIO", position.coords.latitude);
-                  console.log("POSITIO", position.coords.longitude);
+                  LOGGER.info("[ionViewDidLoad] B POSITION",  position);
 
                   this.b_lat = position.coords.latitude;
                   this.b_lon = position.coords.longitude;
@@ -239,17 +231,17 @@ export class ListPage {
               error => {
                 switch (error.code) {
                   case 1:
-                    console.log("Permission Denied");
+                    LOGGER.info("[ionViewDidLoad] B Permission Denied");
                     this.coordinates[0] = 9.223779;
                     this.coordinates[1] = 45.479987;
                     break;
                   case 2:
-                    console.log("Position Unavailable");
+                    LOGGER.info("[ionViewDidLoad] B Position Unavailable");
                     this.coordinates[0] = 9.223779;
                     this.coordinates[1] = 45.479987;
                     break;
                   case 3:
-                    console.log("Timeout");
+                    LOGGER.info("[ionViewDidLoad] B Timeout");
                     this.coordinates[0] = 9.223779;
                     this.coordinates[1] = 45.479987;
                     break;
@@ -257,10 +249,10 @@ export class ListPage {
               }
             );
           } else {
-            console.log("Posizione NON TROVATA WEB");
+            LOGGER.warn("[ionViewDidLoad] B NON TROVATA WEB");
             this.coordinates[1] = 45.479987;
           }
-          console.log("Error getting location", error);
+
         });
     }
   }
@@ -269,11 +261,8 @@ export class ListPage {
     // this.rest.getCategorie();
     this.rest.getCategorie().subscribe(
       (data: Risposta) => {
-        console.log("my data: ", data);
+        LOGGER.info("[getCountries] getCategorie: ", data);
 
-        //    var endPoint = <EndpointinthedbIf> data
-
-        console.log("-------------------------");
         let temp: Endpointinthedb[] = data.valore;
         for (let entry of temp) {
           this.items.push({
@@ -286,8 +275,8 @@ export class ListPage {
             pertinence: this.compare2String(entry.tipo)
           });
         }
-        console.log(JSON.stringify(this.items));
-        console.log("TIPO ", this.account.tipo);
+        LOGGER.info("[getCountries] items",this.items);
+        LOGGER.info("[getCountries] items",this.account.tipo);
         this.ordinaDistanza();
       },
       error => (this.errorMessage = <any>error)
@@ -300,7 +289,7 @@ export class ListPage {
       try {
         exit = compareTwoStrings(a.toLowerCase(), this.account.tipo.toLowerCase());
       } catch (e) {
-        console.log("-ERROR : ", JSON.stringify(a));
+        LOGGER.error("[compare2String]",e);
       }
 
       return exit;
@@ -309,44 +298,10 @@ export class ListPage {
     }
   }
 
-  // getCountries() {
-  //   // this.rest.getCategorie();
-  //   this.rest.getCategorie().subscribe(
-  //     (data: Risposta) => {
-  //       console.log("my data: ", data);
-
-  //       //    var endPoint = <EndpointinthedbIf> data
-
-  //       console.log("-------------------------");
-  //       let temp: Endpointinthedb[] = data.valore;
-  //       for (let entry of temp) {
-  //         this.items.push({
-  //           title: "" + entry.endPoint.description,
-  //           conferma: true,
-  //           tutti: false,
-  //           dbname: entry.endPoint.db_name,
-  //           color: entry.color,
-  //           tipo : entry.tipo,
-  //           pertinence :   compareTwoStrings(entry.tipo.toLowerCase(), this.account.tipo.toLowerCase())
-  //         });
-  //       }
-  //       console.log(JSON.stringify(this.items));
-  //       console.log("TIPO ", this.account.tipo);
-  //       this.ordinaDistanza()
-  //     },
-  //     error => (this.errorMessage = <any>error)
-  //   );
-
-  // }
 
   itemTapped(event, item: EndPoint) {
-    // if(item) {
-    console.log("ITEM : ", JSON.stringify(item));
-    // } else {
-    //   console.log('ITEM : NULL');
-    // }
 
-    console.log("EVENT : ", JSON.stringify(event));
+    LOGGER.info("[itemTapped] ITEM : ",item);
 
     if (item.tutti) {
       for (let entry of this.items) {
@@ -370,10 +325,9 @@ export class ListPage {
   }
 
   firefoxTapped(event, item: EndPoint) {
-    // if(item) {
-    console.log("ITEM f : ", JSON.stringify(item));
+
+    LOGGER.info("[firefoxTapped] : ",  item);
     item.conferma = !item.conferma;
-    console.log("EVENT f: ", JSON.stringify(event));
 
     if (item.tutti) {
       for (let entry of this.items) {
@@ -409,7 +363,7 @@ export class ListPage {
 
   checkFullItems() {
     var exit: boolean;
-    console.log("------ìììì-----------------------");
+
     exit = true;
     for (let obj of this.items) {
       if (!obj.tutti) {
@@ -423,7 +377,7 @@ export class ListPage {
   }
 
   buttonTapped() {
-    console.log("Evvvia!", this.testo);
+
 
     if (this.checkEmptyItems()) {
       let alert = this.alertCtrl.create({
@@ -463,59 +417,6 @@ export class ListPage {
       }
 
       if (this.tipoRicerca == ListPage.INDIRIZZO) {
-        // if (this.isApp) {
-        //   this.nativeGeocoder
-        //     .forwardGeocode(this.indirizzo.getStringIndirizzo())
-        //     .then((datas: NativeGeocoderForwardResult[]) => {
-        //       let data = datas[0];
-        //       // let coordinates: Array<number>;
-        //       this.coordinates[0] = +data.longitude;
-        //       this.coordinates[1] = +data.latitude;
-        //       this.indirizzo.lon = +data.longitude;
-        //       this.indirizzo.lat = +data.latitude;
-
-        //       this.rest
-        //         .getRisultato(
-        //           this.testo,
-        //           categorie,
-        //           this.coordinates,
-        //           this.distanza
-        //         )
-        //         .subscribe((data: Risposta) => {
-        //           loader.dismiss();
-        //           // this.items = data.valore;
-
-        //           let valori: GenericEndPoint[] = data.valore;
-        //           console.log("-> VALORI 1:  ->", valori);
-        //           if (valori.length > 0) {
-        //             this.navCtrl.push(RisultatiPage, {
-        //               risultati: data.valore,
-        //               coordinate: this.coordinates,
-        //               distanza: this.distanza,
-        //               categorie: this.items
-        //             });
-        //           } else {
-        //             let alert = this.alertCtrl.create({
-        //               title: "ATTENZIONE",
-        //               subTitle: "Nessun risultato trovato",
-        //               buttons: ["Indietro"]
-        //             });
-
-        //             alert.present();
-        //           }
-        //         });
-        //     })
-        //     .catch((error: any) => {
-        //       loader.dismiss();
-
-        //       let alert = this.alertCtrl.create({
-        //         title: "Errore",
-        //         subTitle: error + "",
-        //         buttons: ["Indietro"]
-        //       });
-        //       alert.present();
-        //     });
-        // } else {
         this.rest
           .getGeocoding(this.indirizzo.getStringIndirizzoNoGoogle())
           .subscribe(data => {
@@ -535,9 +436,8 @@ export class ListPage {
                 )
                 .subscribe((data: Risposta) => {
                   loader.dismiss();
-                  // this.items = data.valore;
                   let valori: GenericEndPoint[] = data.valore;
-                  console.log("-> VALORI 2:  ->", valori);
+                  LOGGER.info("[buttonTapped] A VALORI :", valori);
                   if (valori.length > 0) {
                     this.navCtrl.push(RisultatiPage, {
                       risultati: data.valore,
@@ -567,8 +467,8 @@ export class ListPage {
           });
         // }
       } else {
-        console.log("Tutti : ", tutti);
-        console.log("Categorie", JSON.stringify(categorie));
+        LOGGER.info("[buttonTapped] Tutti : ", tutti);
+        LOGGER.info("[buttonTapped] Categorie", categorie);
         if (this.testo) {
           this.rest
             .getRisultato(
@@ -580,10 +480,8 @@ export class ListPage {
             )
             .subscribe((data: Risposta) => {
               loader.dismiss();
-
-              // this.items = data.valore;
               let valori: GenericEndPoint[] = data.valore;
-              console.log("-> VALORI 3:  ->", valori);
+              LOGGER.info("[buttonTapped] B VALORI :", valori);
               if (valori.length > 0) {
                 this.navCtrl.push(RisultatiPage, {
                   risultati: data.valore,

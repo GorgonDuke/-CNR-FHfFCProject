@@ -20,7 +20,9 @@ import { WebServiceProvider } from '../../providers/web-service/web-service';
  * Ionic pages and navigation.
  */
 
-
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('FormInserimentoPage')
+LOGGER.set_level(LogLevel.DEBUG)
 @Component({
   selector: 'page-form-inserimento',
   templateUrl: 'form-inserimento.html',
@@ -42,27 +44,26 @@ export class FormInserimentoPage {
   utente: Utente;
   formmodel: FormModel = new FormModel();
 
-  constructor(public navCtrl: NavController, 
-    public navParams: NavParams, 
-    private alertCtrl: AlertController, 
-    private storage: Storage, 
-    private nativeGeocoder: NativeGeocoder, 
-    private toast: Toast, 
-    public plt: Platform, 
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private alertCtrl: AlertController,
+    private storage: Storage,
+    private nativeGeocoder: NativeGeocoder,
+    private toast: Toast,
+    public plt: Platform,
     public rest: WebServiceProvider) {
     if (this.plt.is('core') || this.plt.is('mobileweb')) {
-
+      LOGGER.info("[constructor] È UN BROWSER");
       this.isApp = false;
-
     } else {
-      console.log('NON È UN BROWSER');
+      LOGGER.info("[constructor] NON È UN BROWSER");
       this.isApp = true;
 
     }
 
 
     this.storage.get('utente').then((val) => {
-      console.log(val);
+      LOGGER.info("[constructor] utente ");
       this.utente = val;
       if (val == null) {
         let alert = this.alertCtrl.create({
@@ -72,7 +73,7 @@ export class FormInserimentoPage {
             text: 'Avanti',
             role: 'avanti',
             handler: () => {
-              console.log('Avanti Cliccato');
+              LOGGER.info("[constructor]Avanti Cliccato");
               this.navCtrl.push(IscrizionePage);
             }
           }]
@@ -84,25 +85,21 @@ export class FormInserimentoPage {
   }
 
   regionTapped(event) {
-    console.log('->', event);
-
+    LOGGER.info("[regionTapped]", event);
     if (event === this.regioni[0]) {
       this.provinciaItems = this.provinceLombardia;
     } else {
       this.provinciaItems = this.provincePiemonte;
     }
-
   }
   provinciaTapped(event) {
-    console.log('->', event);
-
-
+    LOGGER.info("[provinciaTapped]", event);
   }
 
   buttonTapped() {
 
     this.storage.get('utente').then((val) => {
-      console.log(val);
+      LOGGER.info("[buttonTapped]",val);
       this.utente = val;
       if (val == null) {
         let alert = this.alertCtrl.create({
@@ -112,7 +109,6 @@ export class FormInserimentoPage {
             text: 'Avanti',
             role: 'avanti',
             handler: () => {
-              console.log('Avanti Cliccato');
               this.navCtrl.push(IscrizionePage);
             }
           }]
@@ -121,11 +117,9 @@ export class FormInserimentoPage {
       }
     });
 
-    
+
     this.formmodel.utenteId = this.utente.id;
-    console.log('->', this.formmodel);
-    console.log('------------------------------------');
-    console.log('->', this.formmodel.notValid());
+    LOGGER.info("[buttonTapped]", this.formmodel);
     if (this.formmodel.notValid().length > 0) {
       let errorText: string;
       let isfirst: boolean = true;
@@ -144,8 +138,8 @@ export class FormInserimentoPage {
       });
       alert.present();
     } else {
-      console.log('-> form corretta!');
-      console.log(this.formmodel.indirizzo.getStringIndirizzo());
+
+      LOGGER.info("[buttonTapped]this.formmodel.indirizzo.getStringIndirizzo() :",this.formmodel.indirizzo.getStringIndirizzo());
 
       this.formmodel.dataInserimento = new Date();
 
@@ -153,100 +147,33 @@ export class FormInserimentoPage {
 
 
       if (this.isApp) {
-        // this.rest.getGeocoding(this.formmodel.indirizzo.getStringIndirizzoNoGoogle()+"%20italy")
-        // .subscribe((data) => {
-        // this.nativeGeocoder.forwardGeocode(this.formmodel.indirizzo.getStringIndirizzo())
-        //   .then((datas: NativeGeocoderForwardResult[]) => {
-        //     // this.formmodel.geometry.coordinates = new Array<number>();
-        //     // this.formmodel.geometry.coordinates[0] = +data.longitude;
-        //     // this.formmodel.geometry.coordinates[1] = +data.latitude;
-        //     let data  = datas[0];
-        //     // console.log("-1-");
-        //     let coordinates: Array<number>;
-        //     coordinates = [+data.longitude, +data.latitude]; //[lon, lat]
-        //     this.formmodel.indirizzo.lon = +data.longitude;
         this.rest.getGeocoding(this.formmodel.indirizzo.getStringIndirizzoNoGoogle()+"%20italy")
         .subscribe((data) => {
 
-          console.log("risulato -> ", JSON.stringify(data));
-          // data = JSON.parse(JSON.stringify(data));
-          // this.formmodel.geometry.coordinates = new Array<number>();
-          // this.formmodel.geometry.coordinates[0] = +data.longitude;
-          // this.formmodel.geometry.coordinates[1] = +data.latitude;
-
-          // console.log("-1-");
+          LOGGER.info("[buttonTapped] A getGeocoding:",data);
           let coordinates: Array<number>;
-          // coordinates = [+data.results[0].geometry.location.lng, +data.results[0].geometry.location.lat]; //[lon, lat]
-          coordinates = [+data[0].lon, +data[0].lat]; //[lon, lat]
+          coordinates = [+data[0].lon, +data[0].lat];
           this.formmodel.indirizzo.lon = +data[0].lon;
           this.formmodel.indirizzo.lat = +data[0].lat;
-            // this.formmodel.indirizzo.lat = +data.latitude;
-            console.log("-Raggio->", this.formmodel.raggio);
             let radius: Number = this.formmodel.raggio * 1000;                           // in meters
-            let numberOfEdges: Number = 16;                     //optional that defaults to 32
-            // console.log("-2-",coordinates);
+            let numberOfEdges: Number = 16;
             this.formmodel.geometry = circleToPolygon(coordinates, radius, numberOfEdges);
-            // console.log("-3-",this.formmodel.geometry.type);
-            // console.log(JSON.stringify(this.formmodel));
-            // let alert = this.alertCtrl.create({
-            //   title: 'Ok',
-            //   subTitle: this.formmodel.indirizzo.getStringIndirizzo() +" | " +this.formmodel.geometry,
-            //   buttons: ['Indietro']
-            // });
-
-            // alert.present();
-
-            // console.log("Risultato : ", this.formmodel);
             this.navCtrl.push(TakepicturePage, { formmodel: this.formmodel });
           })
-          // .catch((error: any) => {
-
-
-          //   let alert = this.alertCtrl.create({
-          //     title: 'Errore',
-          //     subTitle: error + "",
-          //     buttons: ['Indietro']
-          //   });
-          //   alert.present();
-
-          // });
       } else {
         this.rest.getGeocoding(this.formmodel.indirizzo.getStringIndirizzoNoGoogle()+"%20italy")
         .subscribe((data) => {
-
-          console.log("risulato -> ", JSON.stringify(data));
-          // data = JSON.parse(JSON.stringify(data));
-          // this.formmodel.geometry.coordinates = new Array<number>();
-          // this.formmodel.geometry.coordinates[0] = +data.longitude;
-          // this.formmodel.geometry.coordinates[1] = +data.latitude;
-
-          // console.log("-1-");
+          LOGGER.info("[buttonTapped] B getGeocoding:", data);
           let coordinates: Array<number>;
-          // coordinates = [+data.results[0].geometry.location.lng, +data.results[0].geometry.location.lat]; //[lon, lat]
           coordinates = [+data[0].lon, +data[0].lat]; //[lon, lat]
           this.formmodel.indirizzo.lon = +data[0].lon;
           this.formmodel.indirizzo.lat = +data[0].lat;
-          // this.formmodel.indirizzo.lon = +data.results[0].geometry.location.lng;
-          // this.formmodel.indirizzo.lat = +data.results[0].geometry.location.lat;
-          console.log("-Raggio->", this.formmodel.raggio);
           let radius: Number = this.formmodel.raggio * 1000;                           // in meters
           let numberOfEdges: Number = 16;                     //optional that defaults to 32
-          // console.log("-2-",coordinates);
           this.formmodel.geometry = circleToPolygon(coordinates, radius, numberOfEdges);
-          // console.log("-3-",this.formmodel.geometry.type);
-          // console.log(JSON.stringify(this.formmodel));
-          // let alert = this.alertCtrl.create({
-          //   title: 'Ok',
-          //   subTitle: this.formmodel.indirizzo.getStringIndirizzo() +" | " +this.formmodel.geometry,
-          //   buttons: ['Indietro']
-          // });
-
-          // alert.present();
-
-          // console.log("Risultato : ", this.formmodel);
           this.navCtrl.push(TakepicturePage, { formmodel: this.formmodel });
         })
-        
+
       }
     }
 
@@ -256,7 +183,7 @@ export class FormInserimentoPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad FormInserimentoPage');
+    LOGGER.info("[ionViewDidLoad] FormInserimentoPage");
   }
 
 }

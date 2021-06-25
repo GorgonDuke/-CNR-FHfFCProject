@@ -1,7 +1,9 @@
 'use strict';
 import * as mongoose from 'mongoose';
 import * as mongooseGeoJSONSchema from 'mongoose-geojson-schema';
-import {Tweett} from '../models/Tweetter'
+import { Tweett } from '../models/Tweetter'
+
+
 export var Annunci_schema = new mongoose.Schema({
   _id: String,
   utenteId: String,

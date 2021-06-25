@@ -7,6 +7,10 @@ import { WebServiceProvider } from "../../providers/web-service/web-service";
 import { Risposta } from "../../models/Risposta";
 declare var google;
 
+
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('GmapsPage')
+LOGGER.set_level(LogLevel.DEBUG)
 @Component({
   selector: 'gmap',
   templateUrl: 'gmap.html'
@@ -26,10 +30,10 @@ export class GmapsPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private geolocation: Geolocation, public rest: WebServiceProvider) {
 
 
-    console.log("PARAMETRI : ", navParams.data.risultato);
-    console.log("NAME : ", navParams.data.risultato.collection_name);
+    LOGGER.info("[constructor] PARAMETRI : ", navParams.data.risultato);
+
     if (navParams.data.risultato.collection_name === "Annunci") {
-      console.log(" E' ANNUNCI");
+      LOGGER.info("[constructor] IS ANNUNCI");
       rest.getSingoloAnnuncio(navParams.data.risultato._id).subscribe((res: Risposta) => {
 
         if (res) {
@@ -39,7 +43,7 @@ export class GmapsPage {
       });
 
     } else {
-      console.log("NON E' ANNUNCI");
+      LOGGER.info("[constructor] IS not ANNUNCI");
       this.destinazione.lat = +navParams.data.risultato.geometry.coordinates[1];
       this.destinazione.lng = +navParams.data.risultato.geometry.coordinates[0];
     }
@@ -55,20 +59,12 @@ export class GmapsPage {
 
     this.initMap();
     this.startNavigating();
-    // this.geolocation.getCurrentPosition().then((resp) => {
-    //   this.origine.lat = +resp.coords.latitude;
-    //   this.origine.lng=  +resp.coords.longitude;
-    //   
-    //  }).catch((error) => {
-    //    console.log('Error getting location', error);
-    //  });
-
 
   }
 
   initMap() {
 
-    var image = 'assets/imgs/me.png';
+    const image = 'assets/imgs/me.png';
     this.map = new google.maps.Map(this.mapElement.nativeElement, {
       zoom: 7,
       center: this.origine

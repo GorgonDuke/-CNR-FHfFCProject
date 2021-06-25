@@ -1,32 +1,29 @@
 import { Risposta } from "./models/Risposta";
-import { Geometry } from "./models/Geometry";
 import {
-  FormModel,
-  FormModelReturn,
-  GeometryReturn,
+ 
   FormModelFromWeb
 } from "./models/FormModel";
-import { Utente, UtenteC, UtenteInDb } from "./models/Utente";
-import { Annunci_schema } from "./schemas/Schemas";
-import { Account_schema } from "./schemas/Schemas";
-import { Generic_EndPoint_schema } from "./schemas/Schemas";
-import { Endpointinthedb_schema } from "./schemas/Schemas";
-import { ADDRCONFIG } from "dns";
+ 
 import * as bodyParser from "body-parser";
 import express = require("express");
 import multer = require("multer");
 import uuid = require("uuid");
-import { IndirizzoModel } from "./models/IndrizzoModel";
 import {
-  Generic_EndPoint,
+ 
   Generic_EndPoint_Export
 } from "./models/Generic_EndPoint";
 import { DbJobs } from "./providers/DbJobs";
-var path = require("path");
-var cors = require("cors");
-const pathImages: string = "/home/goserver/images/";
+import CONFIG from '../config/config.json';
+import {  getLogger } from "log4js";
+const LOGGER = getLogger("[MAIN]");
+LOGGER.level = "debug"
 
-var mime = {
+
+
+const path = require("path");
+const cors = require("cors"); 
+
+const mime = {
   html: "text/html",
   txt: "text/plain",
   css: "text/css",
@@ -36,84 +33,41 @@ var mime = {
   svg: "image/svg+xml",
   js: "application/javascript"
 };
-var storage = multer.diskStorage({
-  destination: function(req, file, callback) {
-    callback(null, pathImages);
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, CONFIG.pathImages);
   },
-  filename: function(req, file, callback) {
+  filename: function (req, file, callback) {
     callback(null, uuid.v1() + ".jpg");
   }
 });
 
-// var upload = multer({ dest: '/tmp/' })
-var upload = multer({ storage: storage }).single("file");
-var mongoose = require("mongoose");
-
-mongoose.set("debug", true);
-
-mongoose.Promise = require("bluebird");
-mongoose.connect(
-  "mongodb://127.0.0.1:27017/sodatest",
-  {
-    useMongoClient: true
-  }
-);
-
-var db = mongoose.connection;
+const upload = multer({ storage: storage }).single("file");
 
 var fs = require("fs");
 
-var dir = path.join(__dirname, "public");
-
-var EndPointInTheDb = mongoose.model(
-  "EndPointInTheDb",
-  Endpointinthedb_schema,
-  "EndPointInTheDb"
-);
-var Generic_EndPointInTheDb = mongoose.model(
-  "Generic_EndPointb2",
-  Generic_EndPoint_schema,
-  "Generic_EndPoint2"
-);
-var AnnunciInTheDb = mongoose.model("Annunci", Annunci_schema, "Annunci");
-var AccountInTheDb = mongoose.model("Utente", Account_schema, "Utente");
-var esito: boolean;
-
-db.on("error", console.error.bind(console, "connection error:"));
-
-db.once("open", function() {
-  console.log("siamoconnessi ");
-});
 
 let app = express();
 
-// app.use( (req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
-// app.options('*', cors());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get("/getAnnunci/:annuncioId", (request, res) => {
-  console.log("AnnuncioId->", request.params.annuncioId);
-  // console.log("body received ->", req.body);
+  LOGGER.info("/getAnnunci AnnuncioId->", request.params.annuncioId);
   DbJobs.getInstance()
     .getSingoloAnnuncioById(request.params.annuncioId)
     .subscribe((esito: Risposta) => {
-      console.log("--------|||---------------------------------------------");
-      // console.log("Esito ?  ", esito);
       if (esito) {
         if (esito.status) {
-          res.json(esito);
+          LOGGER.info("/getAnnunci [OUT]", esito)
+          res.status(200).json(esito);
+
         } else {
-          res.json(esito);
+          LOGGER.error("/getAnnunci [OUT]", esito)
+          res.status(500).json(esito);
         }
       }
-
-      console.log("--------|||---------------------------------------------");
     });
 });
 
@@ -121,75 +75,77 @@ app.get(
   "/myannunci/:utenteId",
   DbJobs.getInstance().authorisation,
   (request, res, next) => {
-    console.log("My Utente Id ->", request.params.utenteId);
-    // console.log("body received ->", req.body);
+    LOGGER.info("/myannunci My Utente Id ->", request.params.utenteId);
     DbJobs.getInstance()
       .getAnnunciById(request.params.utenteId)
       .subscribe((esito: Risposta) => {
-        console.log("--------|||---------------------------------------------");
-        // console.log("Esito ?  ", esito);
         if (esito) {
           if (esito.status) {
-            res.json(esito);
+            LOGGER.info("/myannunci [OUT]", esito)
+            res.status(200).json(esito);
           } else {
-            res.json(esito);
+            LOGGER.error("/myannunci [OUT]", esito)
+            res.status(500).json(esito);
           }
         }
-
-        console.log("--------|||---------------------------------------------");
       });
   }
 );
 
 app.get("/getGeneric/:genericid/:dbname", (request, res) => {
-  console.log("Generic Id ->", request.params.genericid);
-  console.log("DbName Id ->", request.params.dbname);
-  // console.log("body received ->", req.body);
+  LOGGER.info("/getGeneric Generic Id ->", request.params.genericid);
+  LOGGER.info("/getGeneric DbName Id ->", request.params.dbname);
   DbJobs.getInstance()
     .getSpecificEndPoint(request.params.genericid, request.params.dbname)
     .subscribe((esito: Risposta) => {
-      console.log("--------|||---------------------------------------------");
-      console.log("Esito ?  ", esito);
       if (esito) {
         if (esito.status) {
-          res.json(esito);
+          LOGGER.info("/getGeneric [OUT]", esito)
+          res.status(200).json(esito);
         } else {
-          res.json(esito);
+          LOGGER.error("/getGeneric [OUT]", esito)
+          res.status(500).json(esito);
         }
+      } else {
+        LOGGER.error("/getGeneric [OUT]")
+        res.status(500);
       }
-
-      console.log("--------|||---------------------------------------------");
+ 
     });
 });
 
 app.get("/tweeet/:genericEndPointID", (request, res) => {
-  console.log("My Utente Id ->", request.params.genericEndPointID);
-  // console.log("body received ->", req.body);
+  LOGGER.info("/tweeet My Utente Id ->", request.params.genericEndPointID);
   DbJobs.getInstance()
     .getTweets(request.params.genericEndPointID)
     .subscribe((esito: Risposta) => {
-      console.log("--------|||---------------------------------------------");
-      console.log("Esito twitter ?  ", esito);
+     
+     
       if (esito) {
         if (esito.status) {
-          res.json(esito);
+          LOGGER.info("/tweeet [OUT]", esito)
+          res.status(200).json(esito);
         } else {
-          res.json(esito);
+          LOGGER.error("/tweeet [OUT]", esito)
+          res.status(500).json(esito);
         }
+      } else {
+        LOGGER.error("/tweeet [OUT]")
+        res.status(500);
       }
 
-      console.log("--------|||---------------------------------------------");
+      
     });
 });
 
 app.get(
   "/ricerca/:testo/:categorie/:coordinate/:distance/:preferenza",
   (request, res) => {
-    console.log("Testo da ricercare : ->", request.params.testo);
-    console.log("Categorie in cui ricercare : ->", request.params.categorie);
-    console.log("coordinate in cui ricercare : ->", request.params.coordinate);
-    console.log("distance in cui ricercare : ->", request.params.distance);
-    console.log("preferenza : ->", request.params.preferenza);
+    LOGGER.info("/ricerca Text to search : ->", request.params.testo);
+    LOGGER.info("/ricerca Categories of search : ->", request.params.categorie);
+    LOGGER.info("/ricerca Coordinate : ->", request.params.coordinate);
+    LOGGER.info("/ricerca Distance : ->", request.params.distance);
+    LOGGER.info("/ricerca Preferences : ->", request.params.preferenza);
 
     let categorie: string[] = [];
     if (request.params.categorie) {
@@ -201,9 +157,9 @@ app.get(
         coordinate = JSON.parse(request.params.coordinate);
       }
     }
-    console.log("coordinate in cui ricercare 2: ->", coordinate);
-    console.log("Categorie in cui ricercare 2: ->", categorie);
-    // console.log("body received ->", req.body);
+    LOGGER.info("/ricerca Coordinate [after]: ->", coordinate);
+    LOGGER.info("/ricerca Categories [after]: ->", categorie);
+    
 
     let testo = '"' + request.params.testo + '"';
 
@@ -211,22 +167,18 @@ app.get(
       testo = testo + " " + request.params.preferenza;
     }
     DbJobs.getInstance()
-      .ricercaGenerica(testo, categorie, coordinate, request.params.distance)
+      .ricercaGenerica(testo, categorie, coordinate, +request.params.distance)
       .subscribe((esito: Risposta) => {
-        console.log("--------|||---------------------------------------------");
-        // console.log("Esito ?  ", esito);
+        
         if (esito) {
           if (esito.status) {
-            console.log(
-              "-*>",
-              (<Generic_EndPoint_Export[]>esito.valore).length
-            );
+            LOGGER.info("/ricerca [ricercaGenerica] ",(<Generic_EndPoint_Export[]>esito.valore).length);
             if ((<Generic_EndPoint_Export[]>esito.valore).length == 0) {
-              console.log("-*>RIFACCIO LA QUERY");
+              LOGGER.info("/ricerca [ricercaGenerica] Re do search");
               let testo2;
               if (request.params.preferenza) {
                 testo2 = request.params.testo + " " + request.params.preferenza;
-              } else  {
+              } else {
                 testo2 = request.params.testo;
               }
               DbJobs.getInstance()
@@ -234,57 +186,47 @@ app.get(
                   testo2,
                   categorie,
                   coordinate,
-                  request.params.distance
+                  +request.params.distance
                 )
                 .subscribe((esito: Risposta) => {
-                  console.log(
-                    "--------|||---------------------------------------------"
-                  );
-                  // console.log("Esito ?  ", esito);
                   if (esito) {
                     if (esito.status) {
-                      console.log(
-                        "-*>",
+                      LOGGER.info("/ricerca [ricercaGenerica] ",
                         (<Generic_EndPoint_Export[]>esito.valore).length
                       );
-
-                      res.json(esito);
+                      res.status(200).json(esito);
                     } else {
-                      console.log("->", esito.status);
-                      res.json(esito);
+                      LOGGER.warn("/ricerca C[ricercaGenerica] status ", esito.status);
+                      res.status(404).json(esito);
                     }
                   }
-
-                  console.log(
-                    "--------|||---------------------------------------------"
-                  );
                 });
             } else {
-              res.json(esito);
+              LOGGER.warn("/ricerca B[ricercaGenerica] status",esito);
+              res.status(404).json(esito);
             }
           } else {
-            console.log("->", esito.status);
-            res.json(esito);
+            LOGGER.warn("/ricerca A[ricercaGenerica] status", esito.status);
+            res.status(404).json(esito);
           }
         }
-
-        console.log("--------|||---------------------------------------------");
       });
   }
 );
 
 app.get("/immagini/:id", (req, res) => {
-  var file = path.join(pathImages + req.params.id + ".jpg");
+  const file = path.join(CONFIG.pathImages + req.params.id + ".jpg");
 
-  var type = mime[path.extname(file).slice(1)] || "text/plain";
-  var s = fs.createReadStream(file);
-  s.on("open", function() {
+  const type = mime[path.extname(file).slice(1)] || "text/plain";
+  const s = fs.createReadStream(file);
+  LOGGER.info("/immagini/", req.params.id);
+  s.on("open", function () {
     res.set("Content-Type", type);
     s.pipe(res);
   });
-  s.on("error", function() {
+  s.on("error", function () {
     res.set("Content-Type", "text/plain");
-    res.status(404).end("Not found");
+    res.status(500).end("Not found");
   });
 });
 
@@ -292,16 +234,22 @@ app.get(
   "/utente/login/:utenteid",
   DbJobs.getInstance().authorisation,
   (request, res, next) => {
-    console.log("VERIFICA UTENTE->", request.params.utenteid);
+    LOGGER.info("/utente/login/", request.params.utenteid);
+    
     DbJobs.getInstance()
       .verificaUtente(request.params.utenteid)
       .subscribe((esito: Risposta) => {
         if (esito) {
           if (esito.status) {
-            res.json(esito);
+            LOGGER.info("/utente/login/ [LOGGED]", request.params.utenteid);
+            res.status(200).json(esito);
           } else {
-            res.json(esito);
+            LOGGER.warn("/utente/login/ B[unauthorized]", request.params.utenteid);
+            res.status(401).json(esito);
           }
+        } else {
+          LOGGER.warn("/utente/login/ A[unauthorized]", request.params.utenteid);
+          res.status(401).json(esito);
         }
       });
   }
@@ -311,131 +259,94 @@ app.get(
   "/utente/delete/:utenteid",
   DbJobs.getInstance().authorisation,
   (request, res, next) => {
-    console.log("DELETE UTENTE ID ->", request.params.utenteid);
+    LOGGER.info("/utente/delete ->", request.params.utenteid);
     DbJobs.getInstance()
       .cancellaUtente(request.params.utenteid)
       .subscribe((esito: Risposta) => {
-        console.log("--------|||---------------------------------------------");
-        console.log("Esito ?  ", esito);
+      
+         
         if (esito) {
           if (esito.status) {
-            res.json(esito);
+            LOGGER.info("/utente/delete [DELETED]", request.params.utenteid);
+            res.status(200).json(esito);
           } else {
-            res.json(esito);
+            LOGGER.warn("/utente/delete B[NOT DELETED]", request.params.utenteid);
+            res.status(400).json(esito);
           }
+        } else {
+          LOGGER.warn("/utente/delete A[NOT DELETED]", request.params.utenteid);
+          res.status(500).json(esito);
         }
-        console.log("--------|||---------------------------------------------");
       });
   }
 );
 
-app.get(
-  "/utente/delete/:utenteid",
-  DbJobs.getInstance().authorisation,
-  (request, res, next) => {
-    console.log("DELETE UTENTE ID ->", request.params.utenteid);
-    DbJobs.getInstance()
-      .cancellaUtente(request.params.utenteid)
-      .subscribe((esito: Risposta) => {
-        console.log("--------|||---------------------------------------------");
-        console.log("Esito ?  ", esito);
-        if (esito) {
-          if (esito.status) {
-            res.json(esito);
-          } else {
-            res.json(esito);
-          }
-        }
-        console.log("--------|||---------------------------------------------");
-      });
-  }
-);
 
 app.get(
   "/myannunci/delete/:elemetid",
   DbJobs.getInstance().authorisation,
   (request, res, next) => {
-    console.log("DELETE ANNUNCI ID ->", request.params.elemetid);
+    LOGGER.info("/myannunci/delete ->", request.params.elemetid);
     DbJobs.getInstance()
       .cancellaAnnuncio(request.params.elemetid)
       .subscribe((esito: Risposta) => {
-        console.log("--------|||---------------------------------------------");
-        console.log("Esito ?  ", esito);
         if (esito) {
           if (esito.status) {
-            res.json(esito);
+            LOGGER.info("/myannunci/delete [DELETED]", request.params.elemetid);
+            res.status(200).json(esito);
           } else {
-            res.json(esito);
+            LOGGER.warn("/myannunci/delete B[NOT DELETED]", request.params.elemetid);
+            res.status(400).json(esito);
           }
+        } else {
+          LOGGER.warn("/myannunci/delete A[NOT DELETED]", request.params.elemetid);
+          res.status(500).json(esito);
         }
-        console.log("--------|||---------------------------------------------");
+        
       });
   }
 );
 
-// DbJobs.getInstance().rispostaRichiestaCategorie.subscribe((esito: Risposta) => {
-//     return esito;
-
-// });
 
 app.get("/endPoints", (req, res) => {
   DbJobs.getInstance()
     .getCategorie()
     .subscribe((esito: Risposta) => {
-      console.log("--------|||---------------------------------------------");
-      // console.log("Esito ?  ", esito);
+      LOGGER.info("/endPoints");
       if (esito) {
         if (esito.status) {
-          console.log("-ok");
-          res.json(esito);
+          LOGGER.info("/endPoints", esito);
+          res.status(200).json(esito);
         } else {
-          console.log("-NON ok");
-          res.json(esito);
+          LOGGER.warn("/endPoints B", esito);
+          res.status(400).json(esito);
         }
+      } else {
+        LOGGER.warn("/endPoints A", esito);
+        res.status(500).json(esito);
       }
-      console.log("--------|||---------------------------------------------");
+      
     });
 });
-
-// app.get('/endPoints', DbJobs.getInstance().authorisation, (request, res, next) => {
-
-//     DbJobs.getInstance().getCategorie().subscribe((esito: Risposta) => {
-//         console.log("--------|||---------------------------------------------");
-//         // console.log("Esito ?  ", esito);
-//         if (esito) {
-//             if (esito.status) {
-//                 console.log('-ok');
-//                 res.json(esito);
-//             } else {
-//                 console.log('-NON ok');
-//                 res.json(esito);
-//             }
-//         }
-//         console.log("--------|||---------------------------------------------");
-//     })
-
-// });
-
+ 
 app.post("/iscriviti", (req, res) => {
-  console.log("body received ->", req.body);
-
+   
+  LOGGER.info("/iscriviti", req.body);
   DbJobs.getInstance()
     .iscriviUtente(req.body)
     .subscribe((esito: Risposta) => {
-      console.log("--------|||---------------------------------------------");
-      console.log("Esito ?  ", esito);
-
       if (esito) {
         if (esito.status) {
-          res.json(esito);
-          console.log("--------|||OK");
+          LOGGER.info("/iscriviti B", esito);
+          res.status(200).json(esito);
         } else {
-          res.json(esito);
-          console.log("--------||NON OK");
+          LOGGER.warn("/iscriviti A", esito);
+          res.status(400).json(esito);
         }
+      } else {
+        LOGGER.warn("/iscriviti", esito);
+        res.status(500).json(esito);
       }
-
-      console.log("--------|||---------------------------------------------");
     });
 });
 
@@ -443,38 +354,35 @@ app.post(
   "/utente/modifica",
   DbJobs.getInstance().authorisation,
   (req, res, next) => {
+    LOGGER.info("/utente/modifica", req.body);
     DbJobs.getInstance()
       .modificaUtente(req.body)
       .subscribe((esito: Risposta) => {
-        console.log("--------|||---------------------------------------------");
-        console.log("Esito ?  ", esito);
-
         if (esito) {
           if (esito.status) {
-            res.json(esito);
-            console.log("--------|||OK");
+            LOGGER.info("/utente/modifica", esito);
+            res.status(200).json(esito);
           } else {
-            res.json(esito);
-            console.log("--------||NON OK");
+            LOGGER.warn("/utente/modifica B", esito);
+            res.status(400).json(esito);
           }
+        } else {
+          LOGGER.warn("/utente/modifica A", esito);
+          res.status(500).json(esito);
         }
-
-        console.log("--------|||---------------------------------------------");
       });
   }
 );
 
 app.post("/offerta/upload", (req, res, next) => {
-  console.log("body received ->", req);
+  LOGGER.info("/offerta/upload", req);
 
-  upload(req, res, function(err) {
-    console.log("-->", JSON.stringify(req.body.formModel));
-
+  upload(req, res, function (err) {
+    LOGGER.info("/offerta/upload",  req.body.formModel );
     if (!req.file) {
-      console.log("body received ->", req.body);
-
-      console.log("No file received");
-      return res.send({
+      
+      LOGGER.info("/offerta/upload No file received");
+      return res.status(500).send({
         success: false
       });
     } else {
@@ -486,24 +394,24 @@ app.post("/offerta/upload", (req, res, next) => {
           req.file.filename.substring(0, req.file.filename.length - 4)
         )
         .subscribe((esito: Risposta) => {
-          console.log(
-            "--------|||---------------------------------------------"
-          );
-          console.log("Esito ?  ", esito);
           if (esito) {
             if (esito.status) {
-              res.json(esito);
+              LOGGER.info("/offerta/upload", esito);
+              res.status(200).json(esito);
             } else {
-              res.json(esito);
+              LOGGER.warn("/offerta/upload B", esito);
+              res.status(400).json(esito);
             }
+          } else {
+            LOGGER.warn("/offerta/upload A", esito);
+            res.status(500).json(esito);
           }
-
-          console.log(
-            "--------|||---------------------------------------------"
-          );
         });
     }
   });
 });
 
-app.listen(3000);
+ 
+app.listen(CONFIG.port, () => {
+  LOGGER.info("⚡️[" + CONFIG.server_name + "]: Server is running at https://localhost:" + CONFIG.port + " - " + new Date().toISOString());
+})

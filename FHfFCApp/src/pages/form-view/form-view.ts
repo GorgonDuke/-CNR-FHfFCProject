@@ -13,7 +13,9 @@ import { Utente } from '../../models/Utente';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('FormViewPage')
+LOGGER.set_level(LogLevel.DEBUG)
 
 @Component({
   selector: 'page-form-view',
@@ -40,24 +42,21 @@ export class FormViewPage {
   //  this.pippo = JSON.stringify(this.formmodel);
 
     this.storage.get("utente").then((val: Utente) => {
-      console.log('utente: ', val);
+      LOGGER.info("[constructor] utente: ", val);
       if (val) {
         this.utente = val;
       }
 
     });
-    console.log('----------------------------------------------------------------------');
-    console.log('-|1||->', this.formmodel);
-    console.log('----------------------------------------------------------------------');
-    console.log('-|||->', this.formmodel.geometry.coordinates);
-    console.log('----------------------------------------------------------------------');
+    LOGGER.info("[constructor] formmodel:", this.formmodel);
+
   }
 
   ionViewDidLoad() {
     this.loadmap();
 
 
-    
+
 
 
   }

@@ -10,7 +10,9 @@ import { WebServiceProvider } from '../../providers/web-service/web-service';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('TweetsViewerPage')
+LOGGER.set_level(LogLevel.DEBUG)
 @Component({
   selector: 'page-tweets-viewer',
   templateUrl: 'tweets-viewer.html',
@@ -41,7 +43,7 @@ export class TweetsViewerPage {
 
 
     loader.onDidDismiss(() => {
-      console.log('Dismissed loading');
+      LOGGER.info('[constructor] Dismissed loading');
       if (!this.downloaded) {
          toast.present();
       }
@@ -53,33 +55,25 @@ export class TweetsViewerPage {
       loader.dismiss();
     }, 10000);
 
-    console.log("PARAMETRI : ", navParams.data.risultato);
-    
+    LOGGER.info("[constructor] PARAMETRI : ", navParams.data.risultato);
+
 
     this.rest.getTweets(encodeURI(navParams.data.risultato.human_desc)).subscribe((res: Risposta) => {
       this.downloaded = true;
       loader.dismiss();
       // this.visualizza = true;
-      console.log("ECCO Twetter: ", res);
+      LOGGER.info("[constructor] Twetter: ", res);
       // this.generic = JSON.stringify(res, undefined,"\t");
       this.items = res.valore;
 
     });
 
-    // this.rest.getTweets(navParams.data.risultato._id).subscribe((res: Risposta) => {
-    //   this.downloaded = true;
-    //   loader.dismiss();
-    //   // this.visualizza = true;
-    //   console.log("ECCO Twetter: ", res);
-    //   // this.generic = JSON.stringify(res, undefined,"\t");
-    //   this.items = res.valore;
 
-    // });
 
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad TweetsViewerPage');
+    LOGGER.info("[ionViewDidLoad] TweetsViewerPage");
   }
 
 }

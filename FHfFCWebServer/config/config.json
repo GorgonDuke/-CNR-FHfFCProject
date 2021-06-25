@@ -1,0 +1,7 @@
+{
+    "server_name" : "FHfFC WEB SERVER",
+    "port": 3000,
+    "mongodb_url" : "mongodb://127.0.0.1:27017/testsodatest",
+    "pathImages" : "/home/goserver/images/"
+
+}

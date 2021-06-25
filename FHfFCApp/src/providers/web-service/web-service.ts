@@ -8,25 +8,14 @@ import 'rxjs/add/operator/catch';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { Utente } from '../../models/Utente';
-// import { Risposta } from '../../models/Risposta';
-// import { ResponseContentType, RequestOptionsArgs, RequestOptions } from '@angular/http';
-/*
-  Generated class for the WebServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('WebServiceProvider')
+LOGGER.set_level(LogLevel.DEBUG)
 @Injectable()
 export class WebServiceProvider {
 
-  // private categorieURL = 'http://localhost:3000/endPoints';
-  // private iscrizioneURL = 'http://localhost:3000/iscriviti';
-
-  // public static URL : string = 'http://127.0.0.1:3000/';
-  public static URL: string = 'https://fhffcapp.it/endPoints/';
-  // public static URL: string = 'http://192.168.1.12:3000/';
-  // public static URL: string = 'http://10.0.5.17:3000/';
-  // public static URL : string = 'http://192.168.1.9:3000/';
+  public static URL: string = 'http://127.0.0.1:3000/';
+  // public static URL: string = 'https://fhffcapp.it/endPoints/';
 
   public static UPLOADURL = WebServiceProvider.URL + 'offerta/upload';
   private categorieURL = WebServiceProvider.URL + 'endPoints';
@@ -46,7 +35,7 @@ export class WebServiceProvider {
   // private TEMP_URL: string = "http://ugbd.get-it.it/proxy/?proxyTo=http://ugbd.get-it.it/geoserver/wms?version=1.1.0&transparent=TRUE&format=image%2Fpng&srs=EPSG%3A4326&bbox=14.05072%2C%2040.82471%2C%2014.30817%2C%2040.91915&service=WMS&request=GetMap&styles=&layers=geonode%3ANAPOLI_DEFORMAZIONE_MAP&width=256&height=256"
 
 
-  
+
   private TEMP_URL: string = "https://ugbd.get-it.it/proxy/cesium/aHR0cDovL3VnYmQuZ2V0LWl0Lml0L2dlb3NlcnZlci9nZW9ub2RlL3dtcz9zZXJ2aWNlPVdNUyZ2ZXJzaW9uPTEuMS4wJnJlcXVlc3Q9R2V0TWFwJmxheWVycz1nZW9ub2RlOk5BUE9MSV9ERUZPUk1BWklPTkVfTUFQJnN0eWxlcz0mYmJveD0xNC4wNTA3Miw0MC44MjQ3MSwxNC4zMDgxNyw0MC45MTkxNSZ3aWR0aD04OTkmaGVpZ2h0PTMzMCZzcnM9RVBTRzo0MzI2JmZvcm1hdD1pbWFnZS9wbmc=?";
 
   // private TEMP_URL:string = "http://ugbd.get-it.it/proxy/?proxyTo=http://ugbd.get-it.it/geoserver/geonode/wms&REQUEST=GetFeatureInfo&EXCEPTIONS=application%2Fvnd.ogc.se_xml&BBOX=13.953422%2C40.788963%2C14.405468%2C40.954897&SERVICE=WMS&INFO_FORMAT=application/json&QUERY_LAYERS=geonode%3ANAPOLI_DEFORMAZIONE_MAP&FEATURE_COUNT=50&Layers=geonode%3ANAPOLI_DEFORMAZIONE_MAP&WIDTH=899&HEIGHT=330&format=image%2Fpng&styles=&srs=EPSG%3A4326&version=1.1.1&x=585&y=207";
@@ -63,37 +52,28 @@ export class WebServiceProvider {
   }
 
 
-  
 
 
-  postFile(fileToUpload: File, formModel: FormModel,account: Utente)  {
+
+  postFile(fileToUpload: File, formModel: FormModel, account: Utente) {
 
     const formData: FormData = new FormData();
     formData.append('file', fileToUpload, fileToUpload.name);
     formData.append('formModel', JSON.stringify(formModel));
     let auth: string = account.email + ":" + account.password;
-
     let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
-    // let auth: string = account.email + ":" + account.password;
-    console.log('-------------------POSTFILE---------------------------------');
-    console.log("Auth -> ", auth);
-    // console.log('xxx---> ', auth);
-    // let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
- 
-    
+    LOGGER.info("[postFile] Auth -> ", auth);
     return this.http
-      .post(WebServiceProvider.UPLOADURL, formData )
+      .post(WebServiceProvider.UPLOADURL, formData)
       .map(this.fornisciRisposta)
       .catch(this.handleError);
   }
 
 
-  getWFS()  {
-    console.log('xxx---> ', this.TEMP_URL);
+  getWFS() {
 
-    // let httpHeader7s = new HttpHeaders().set('Content-Type', 'image/png');
     return this.http.get(this.TEMP_URL, { responseType: 'blob' }).map(blob => {
-      console.log("Blob", blob)
+      LOGGER.info("[getWFS] Auth -> ", this.TEMP_URL, "| blob :", blob);
       var urlCreator = window.URL;
       return this._sanitizer.bypassSecurityTrustUrl(urlCreator.createObjectURL(blob));
     })
@@ -104,67 +84,56 @@ export class WebServiceProvider {
   }
 
 
-  getGeocoding(indirizzo: string)  {
-    console.log('xx11111x---> ', this.altetnativeGeocoding + indirizzo + this.altetnativeGeocoding2);
+  getGeocoding(indirizzo: string) {
+    LOGGER.info("[getGeocoding]", this.altetnativeGeocoding + indirizzo + this.altetnativeGeocoding2);
     return this.http.get(this.altetnativeGeocoding + indirizzo + this.altetnativeGeocoding2)
       .map(this.fornisciRisposta)
       .catch(this.handleError);
-    // return this.http.jsonp(this.altetnativeGeocoding + indirizzo + this.altetnativeGeocoding, 'callback')
-    // .map(this.fornisciRisposta)
-    // .catch(this.handleError);
+
   }
 
-  getPosition()  {
-    console.log('xxx---> ', this.getPositionByIp);
+  getPosition() {
+    LOGGER.info("[getPosition]", this.getPositionByIp);
     return this.http.get(this.getPositionByIp)
       .map(this.fornisciRisposta)
       .catch(this.handleError);
   }
 
 
-  getCategorie()  {
+  getCategorie() {
 
-    console.log("Categorie URL : ", this.categorieURL)
-
-    // let auth: string = account.email + ":" + account.password;
-
-    // let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
-    // headers.append('Content-Type', 'application/json; charset=utf-8');
-    // console.log('xxx---> ', this.categorieURL);
-    // console.log('xxx-2--> ', httpHeaders);
-    // console.log('xxx-"Authorization"--> ', httpHeaders.get('Authorization'));
-    // console.log('xxx-btoa("username:password")--> ', btoa(auth));
+    LOGGER.info("[getCategorie]", this.categorieURL)
     return this.http.get(this.categorieURL)
       .map(this.fornisciRisposta)
       .catch(this.handleError);
   }
 
-  getSingoloAnnuncio(id: string)  {
-    console.log('xxx---> ', this.singoloAnnuncioUrl);
+  getSingoloAnnuncio(id: string) {
+    LOGGER.info("[getSingoloAnnuncio]", this.singoloAnnuncioUrl);
     return this.http.get(this.singoloAnnuncioUrl + id)
       .map(this.fornisciRisposta)
       .catch(this.handleError);
   }
 
 
-  getGeneric(id: string, dbname: string)  {
-    console.log('xxx---> ', this.genericURL);
+  getGeneric(id: string, dbname: string) {
+    LOGGER.info("[getGeneric] id:", id, " | dbname:", dbname);
     return this.http.get(this.genericURL + id + "/" + dbname)
       .map(this.fornisciRisposta)
       .catch(this.handleError);
   }
 
-  getTweets(id: string)  {
-    console.log('xxx---> ', this.tweetURL);
+  getTweets(id: string) {
+    LOGGER.info("[getTweets] id:", this.tweetURL + id);
     return this.http.get(this.tweetURL + id)
       .map(this.fornisciRisposta)
       .catch(this.handleError);
   }
 
 
-  getRisultato(frase: string, categorie: string[], coordinate: number[], distanza: number,preferenza: string )  {
+  getRisultato(frase: string, categorie: string[], coordinate: number[], distanza: number, preferenza: string) {
 
-    console.log('xxx---> ', this.risulati + frase + "/" + JSON.stringify(categorie) + "/" + JSON.stringify(coordinate) + "/" + distanza + "/" + preferenza);
+    LOGGER.info("[getRisultato] id:",this.risulati + frase + "/" + JSON.stringify(categorie) + "/" + JSON.stringify(coordinate) + "/" + distanza + "/" + preferenza);
 
     return this.http.get(this.risulati + frase + "/" + JSON.stringify(categorie) + "/" + JSON.stringify(coordinate) + "/" + distanza + "/" + preferenza)
       .map(this.fornisciRisposta)
@@ -172,24 +141,26 @@ export class WebServiceProvider {
 
   }
 
-  verificaIscrizione(user: string, pass : string)  {
+  verificaIscrizione(user: string, pass: string) {
+    LOGGER.info("[verificaIscrizione}")
     let auth: string = user + ":" + pass;
     let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
-    return this.http.get(this.verificaURL  + user, { headers: httpHeaders })
-    .map(this.fornisciRisposta)
-    .catch(this.handleError);
+    return this.http.get(this.verificaURL + user, { headers: httpHeaders })
+      .map(this.fornisciRisposta)
+      .catch(this.handleError);
   }
 
-  getMyAnnunci(account: Utente)  {
-
+  getMyAnnunci(account: Utente) {
+    LOGGER.info("[getMyAnnunci]")
     let auth: string = account.email + ":" + account.password;
-
     let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
     return this.http.get(this.iMieiAnnunciUrl + account.id, { headers: httpHeaders })
       .map(this.fornisciRisposta)
       .catch(this.handleError);
   }
-  rimuoviAnnuncio(id: string, account: Utente)  {
+  rimuoviAnnuncio(id: string, account: Utente) {
+
+    LOGGER.info("[rimuoviAnnuncio]", id)
     let auth: string = account.email + ":" + account.password;
 
     let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
@@ -198,7 +169,9 @@ export class WebServiceProvider {
       .catch(this.handleError);
   }
 
-  eliminaAccount(account: Utente)  {
+  eliminaAccount(account: Utente) {
+
+    // LOGGER.info("[eliminaAccount]", account);
     let auth: string = account.email + ":" + account.password;
 
     let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
@@ -208,6 +181,8 @@ export class WebServiceProvider {
   }
 
   postIscrizione(account: Utente) {
+
+    // LOGGER.info("[postIscrizione]", account);
     let auth: string = account.email + ":" + account.password;
 
     let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
@@ -221,14 +196,16 @@ export class WebServiceProvider {
 
   }
 
-  postModifica(account: Utente, oldpass : string, oldmail : string) {
-    let auth: string = oldmail + ":" +  oldpass ;
-    console.log("UP ->", auth);
+  postModifica(account: Utente, oldpass: string, oldmail: string) {
+
+    // LOGGER.info("[postModifica] account:", account);
+    let auth: string = oldmail + ":" + oldpass;
+
     let httpHeaders = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', "Basic " + btoa(auth));
 
     return this.http.post(this.modificaURL, {
       utente: account
-    },  {headers: httpHeaders})
+    }, { headers: httpHeaders })
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
 
@@ -250,7 +227,7 @@ export class WebServiceProvider {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
+    LOGGER.error(errMsg);
     return Observable.throw(errMsg);
   }
 

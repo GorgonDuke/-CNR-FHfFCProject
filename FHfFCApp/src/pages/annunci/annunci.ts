@@ -10,7 +10,9 @@ import { FormViewPage } from '../form-view/form-view';
 import { Risposta } from '../../models/Risposta';
 
 
-
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('AnnunciPage')
+LOGGER.set_level(LogLevel.DEBUG)
 
 @Component({
   selector: 'annunci-list',
@@ -30,25 +32,17 @@ export class AnnunciPage {
 
   ionViewDidLoad() {
 
-    // this.storage.get('utente').then((val) => {
-    //   console.log(val);
-    //   this.utente = val;
-    //   if (val != null) {
-    //     this.getAnnunci('4cca9850-fb84-11e7-aead-b3af175e376b');    
-    //   }
-    // });
 
-    // this.getAnnunci("8a49e920-0c40-11e8-bf1b-eb7251a3c3bf");
     this.items = [];
     this.storage.get("utente").then( (val : Utente) => {
-      console.log('utente: ',val);
+      LOGGER.info("[ionViewDidLoad] utente:");
       if ( val) {
 
         this.utente = val;
-        
+
         this.getAnnunci();
-        
-      } 
+
+      }
 
     });
 
@@ -62,8 +56,7 @@ export class AnnunciPage {
   }
   itemTapped(item) {
 
-
-    console.log('my data: ', item);
+    LOGGER.info("[itemTapped] data:", item);
 
     this.navCtrl.push(FormViewPage, { 'risultato': item.tutto });
   }
@@ -72,11 +65,7 @@ export class AnnunciPage {
     this.rest.getMyAnnunci(this.utente)
       .subscribe(
       (data:Risposta) => {
-        console.log('my data: --> ', data);
-
-        //    var endPoint = <EndpointinthedbIf> data
-
-        // console.log("-------------------------");
+          LOGGER.info("[getAnnunci] data:", data);
         for (let entry of data.valore) {
           let dataix: String;
 

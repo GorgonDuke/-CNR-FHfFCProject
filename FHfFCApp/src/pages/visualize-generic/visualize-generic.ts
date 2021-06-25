@@ -16,6 +16,9 @@ import { AnnuncioViewRicercaPage } from '../annuncio-view-ricerca/annuncio-view-
  * Ionic pages and navigation.
  */
 
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('VisualizeGenericPage')
+LOGGER.set_level(LogLevel.DEBUG)
 
 @Component({
   selector: 'page-visualize-generic',
@@ -30,17 +33,17 @@ export class VisualizeGenericPage {
   ntweet: number;
   items : TwettExport[];
   constructor(public navCtrl: NavController, public navParams: NavParams, public rest: WebServiceProvider) {
-    console.log("RISULTATO : ", navParams.data.risultato);
+    LOGGER.info("[constructor] result : ", navParams.data.risultato);
     if (navParams.data.risultato.collection_name === "Annunci") {
-     
-      
+
+
       this.descrizione = AnnuncioViewRicercaPage;
     } else {
       this.descrizione = DescriptionViewerPage;
-      
-      
+
+
     }
-   
+
 
 
     this.tweets = TweetsViewerPage;
@@ -49,7 +52,7 @@ export class VisualizeGenericPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad VisualizeGenericPage');
+    LOGGER.info("[ionViewDidLoad]  VisualizeGenericPage");
   }
 
 

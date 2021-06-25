@@ -5,6 +5,11 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "pretty": true,
     "typeRoots": ["node_modules/@types"]
   },
   "include": [

@@ -15,6 +15,10 @@ import { EndPoint } from "../../models/EndPoint";
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
+
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('RisultatiPage')
+LOGGER.set_level(LogLevel.DEBUG)
 declare var google;
 
 @Component({
@@ -46,22 +50,23 @@ export class RisultatiPage {
     public plt: Platform
   ) {
     // let categorie : string [] = ['Unita-di-Offerta-Sociale-Prima-Infanzia','Elenco-CSS-per-disabili'];
-    console.log("co", this.navParams.get("coordinate"));
+    LOGGER.info("[constructor] coordinates", this.navParams.get("coordinate"));
     this.coordinates = this.navParams.get("coordinate");
     this.distanza = this.navParams.get("distanza");
     this.categorie = this.navParams.get("categorie");
-    console.log("-> CATEGORIE -> ", this.categorie);
+    LOGGER.info("[constructor] categories", this.categorie);
     this.origine.lat = this.coordinates[1];
     this.origine.lng = this.coordinates[0];
     this.score = true;
 
     if (this.plt.is("core") || this.plt.is("mobileweb")) {
+      LOGGER.info("[constructor] IS A BROWSER");
       this.isApp = false;
       this.stile = "600px";
       this.stilew = "50%";
       this.stilew2 = "50%";
     } else {
-      console.log("NON È UN BROWSER");
+      LOGGER.info("[constructor] IS NOT A BROWSER");
       this.isApp = true;
       this.stile = "500px";
       this.stilew = "100%";
@@ -127,7 +132,7 @@ export class RisultatiPage {
       if (a.score > b.score) return -1;
       return 0;
     });
-    console.log("ITEMS->", JSON.stringify(this.items));
+    LOGGER.info("[ionViewDidLoad] Items:",this.items);
 
     let itemsToRemove : GenericEndPoint[] = [];
 
@@ -135,7 +140,7 @@ export class RisultatiPage {
       item.score = Math.round(item.score * 100) / 100;
       if (item.annunciLat) {
 
-        
+
         item.distance = this.calculateDistance(
           item.annunciLat,
           this.origine.lat,
@@ -159,20 +164,12 @@ export class RisultatiPage {
     }
 
     for ( let item of itemsToRemove) {
-      console.log("Removed -> ", JSON.stringify(item))
+      LOGGER.info("[ionViewDidLoad] Item to remove :",item)
       this.removeItem(item);
     }
 
     this.initMap();
 
-    // this.geolocation.getCurrentPosition().then((resp) => {
-    //   this.origine.lat = +resp.coords.latitude;
-    //   this.origine.lng = +resp.coords.longitude;
-    //
-
-    // }).catch((error) => {
-    //   console.log('Error getting location', error);
-    // });
   }
 
   getcoordinates(geometry: Geometry) {
@@ -187,7 +184,7 @@ export class RisultatiPage {
 
       exit.push(temp);
     }
-    console.log("Poligono : ", exit);
+    LOGGER.info("[getcoordinates] Polygon :", exit);
 
     return exit;
   }
@@ -205,7 +202,7 @@ export class RisultatiPage {
     try {
       this.map = leaflet.map("map").fitWorld();
     } catch (error) {
-      console.log("->", error);
+      LOGGER.error("[initMap] ERROR",error)
     }
     if (!this.origine.lat) {
       this.origine.lat = 45.479987;
@@ -221,17 +218,14 @@ export class RisultatiPage {
       .addTo(this.map);
 
     this.map.setView([this.origine.lat, this.origine.lng], 12);
-    // this.map = new google.maps.Map(this.mapElement.nativeElement, {
-    //   zoom: 10,
-    //   center: this.origine
-    // });
+
 
     let coordinates: Array<number>;
     coordinates = [this.origine.lng, this.origine.lat]; //[lon, lat]
 
     let geometry: Geometry = new Geometry();
     geometry = circleToPolygon(coordinates, this.distanza * 1000, 16);
-    console.log("GEOMETRY -> ", geometry);
+    LOGGER.error("[initMap] GEOMETRY -> ", geometry);
     let polygon = leaflet.polygon(this.reverseCoordinate(geometry));
     this.map.addLayer(polygon);
 
@@ -245,7 +239,7 @@ export class RisultatiPage {
       risultato: item,
       coordinate: this.coordinates
     });
-    console.log("HO CLICCATO : ", item);
+
   }
 
   disegnaMarker() {
@@ -253,7 +247,7 @@ export class RisultatiPage {
     let counter: number = 0;
     for (let element of this.items) {
       element.image = "assets/imgs/" + counter + ".png";
-      // let position;
+
       let museumMarker: any;
 
       const myCustomColour = this.getColor(element.collection_name);
@@ -263,12 +257,12 @@ export class RisultatiPage {
         width: 3rem;
         height: 3rem;
         display: block;
-        text-align: center;     
-      
+        text-align: center;
+
         position: relative;
         color: white;
         transform: rotate(45deg);
-        border-radius: 3rem 3rem 0;        
+        border-radius: 3rem 3rem 0;
         border: 1px solid #FFFFFF`;
 
       let greenIcon = leaflet.divIcon({
@@ -279,16 +273,7 @@ export class RisultatiPage {
         html: `<span style="${markerHtmlStyles}" >${counter}</span>`
       });
 
-      // transform: rotate(45deg);
-      // left: -1.5rem;
-      // left: -1.5rem;
-      // top: -1.5rem;
-      // let greenIcon = leaflet.icon({
-      //   iconUrl: 'assets/imgs/' + counter + '.png',
-      //   iconSize: [15, 15], // size of the icon
-      //   iconAnchor: [0, 0], // point of the icon which will correspond to marker's location
 
-      // });
 
       if (element.collection_name === "Annunci") {
         if (element.annunciLat) {
@@ -310,7 +295,7 @@ export class RisultatiPage {
             risultato: element,
             coordinate: this.coordinates
           });
-          console.log("HO CLICCATO : ", element);
+
         });
         this.markerGroup.addLayer(museumMarker);
       }

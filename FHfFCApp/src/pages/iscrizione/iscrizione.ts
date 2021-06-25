@@ -19,7 +19,9 @@ import { HelloIonicPage } from "../hello-ionic/hello-ionic";
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('IscrizionePage')
+LOGGER.set_level(LogLevel.DEBUG)
 @Component({
   selector: "page-iscrizione",
   templateUrl: "iscrizione.html"
@@ -44,7 +46,7 @@ export class IscrizionePage {
     private alertCtrl: AlertController
   ) {
     this.storage.get("utente").then((val: Utente) => {
-      console.log("utente : ", val);
+      // LOGGER.info("[CONST] utente : ", val);
       if (val) {
         this.account = val;
         this.oldpassword = this.account.password;
@@ -61,7 +63,7 @@ export class IscrizionePage {
   }
 
   ionViewDidLoad() {
-    console.log("ionViewDidLoad FormInserimentoPage");
+    LOGGER.info("[ionViewDidLoad] IscrizionePage");
   }
 
   verificaI1() {
@@ -74,7 +76,7 @@ export class IscrizionePage {
           .verificaIscrizione(this.account.email, this.account.password)
           .subscribe((data: Risposta) => {
             if (data.esito) {
-              console.log("Utente : ", data);
+              LOGGER.info("[verificaI2] Utente : ", data);
               this.storage.set("utente", data.valore.utente).then(err => {
                 let toast = this.toastCtrl.create({
                   message: "Verifica avvenuta con successo",
@@ -99,7 +101,7 @@ export class IscrizionePage {
           duration: 6000,
           position: "bottom"
         });
-        toast.present();  
+        toast.present();
       }
     } else {
       let toast = this.toastCtrl.create({
@@ -120,24 +122,17 @@ export class IscrizionePage {
           text: "Indietro",
           role: "cancel",
           handler: () => {
-            console.log("Cancel clicked");
+            LOGGER.info("[rimuoviaccount] Cancel clicked");
           }
         },
         {
           text: "Sì,Elimina",
 
           handler: () => {
-            // let toast = this.toastCtrl.create({
-            //   message: this.account.id,
-            //   duration: 6000,
-            //   position: 'top'
-            // });
-            // toast.present();
-
             this.rest
               .eliminaAccount(this.account)
               .subscribe((data: Risposta) => {
-                console.log("--->", data);
+                LOGGER.info("[rimuoviaccount] risposta : ", data);
                 if (!data.esito) {
                   let toast = this.toastCtrl.create({
                     message: "Qualcosa è andato storto riprova più tardi",
@@ -165,7 +160,7 @@ export class IscrizionePage {
   }
 
   invia() {
-    console.log("SCHIACCIO IL BOTTONE! ");
+    LOGGER.info("[invia]");
     if (!this.privacy) {
       let toast = this.toastCtrl.create({
         message: "Attenzione è necessario accettare le norme sulla privacy",
@@ -178,7 +173,7 @@ export class IscrizionePage {
         if (this.account.password == this.confermaPassoword) {
           this.rest.postIscrizione(this.account).subscribe(
             (risposta: Risposta) => {
-              console.log("-Esito-->", risposta);
+              LOGGER.info("[invia] result", risposta);
 
               if (risposta.esito) {
                 this.account.id = risposta.valore.id;
@@ -191,11 +186,6 @@ export class IscrizionePage {
                   toast.present();
                   this.navCtrl.setRoot(HelloIonicPage);
                 });
-                // this.toast.show(`Iscrizione avvenuta con successo`, '3000', 'center').subscribe(
-                //   toast => {
-                //     console.log(toast);
-                //   }
-                // );
               } else {
                 let toast = this.toastCtrl.create({
                   message: risposta.status,
@@ -203,16 +193,10 @@ export class IscrizionePage {
                   position: "bottom"
                 });
                 toast.present();
-                // this.toast.show(data.error, '5000', 'center').subscribe(
-                //   toast => {
-                //     console.log(toast);
-                //   }
-                // );
-                // this.navCtrl.setRoot(HelloIonicPage);
               }
             },
             error => {
-              console.log("ERROR");
+              LOGGER.error("[invia] error",error);
               this.navCtrl.setRoot(HelloIonicPage);
             }
           );
@@ -250,13 +234,13 @@ export class IscrizionePage {
           text: "No",
           role: "cancel",
           handler: () => {
-            console.log("No clicked");
+            LOGGER.info("[modifica] No clicked");
           }
         },
         {
           text: "Si Salva!",
           handler: data => {
-            console.log("Si Salva! clicked");
+            LOGGER.info("[modifica] save clicked");
 
             if (this.validateEmail(this.account.email)) {
               if (this.account.password == this.confermaPassoword) {
@@ -265,8 +249,7 @@ export class IscrizionePage {
                     .postModifica(this.account, this.oldpassword, this.oldmail)
                     .subscribe(
                       (risposta: Risposta) => {
-                        console.log("-Esito-->", risposta);
-
+                        LOGGER.info("[modifica] result", risposta);
                         if (risposta.esito) {
                           this.account.id = risposta.valore.id;
                           this.storage.set("utente", this.account).then(err => {
@@ -278,11 +261,6 @@ export class IscrizionePage {
                             toast.present();
                             this.navCtrl.setRoot(HelloIonicPage);
                           });
-                          // this.toast.show(`Iscrizione avvenuta con successo`, '3000', 'center').subscribe(
-                          //   toast => {
-                          //     console.log(toast);
-                          //   }
-                          // );
                         } else {
                           let toast = this.toastCtrl.create({
                             message: risposta.status,
@@ -293,7 +271,7 @@ export class IscrizionePage {
                         }
                       },
                       error => {
-                        console.log("ERROR");
+                        LOGGER.error("[modifica] error", error);
                         this.navCtrl.setRoot(HelloIonicPage);
                       }
                     );

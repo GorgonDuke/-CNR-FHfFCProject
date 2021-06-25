@@ -17,6 +17,9 @@ declare var google;
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('AnnuncioViewRicercaPage')
+LOGGER.set_level(LogLevel.DEBUG)
 
 @Component({
   selector: 'page-annuncio-view-ricerca',
@@ -38,10 +41,10 @@ export class AnnuncioViewRicercaPage {
   iscritto: boolean;
 
   constructor(public navCtrl: NavController, private storage: Storage, public navParams: NavParams, private alertCtrl: AlertController, public rest: WebServiceProvider) {
-    console.log("ID : ", navParams.data.risultato._id);
+    LOGGER.info("[constructor] ID :", navParams.data.risultato._id);
     this.formmodel  = new FormModel();
     rest.getSingoloAnnuncio(navParams.data.risultato._id).subscribe((data: Risposta) => {
-      console.log("RISULTATO data : ", data);
+      LOGGER.info("[constructor] RISULTATO getSingoloAnnuncio : ", data);
       if (data) {
         this.formmodel = data.valore;
         this.initMap();
@@ -50,13 +53,13 @@ export class AnnuncioViewRicercaPage {
     });
 
     this.storage.get("utente").then( (val : Utente) => {
-      console.log('utente: ',val);
+
       if ( val) {
 
         this.utente = val;
-        
-        
-      } 
+
+
+      }
 
     });
 
@@ -91,14 +94,14 @@ export class AnnuncioViewRicercaPage {
 
   initMap() {
     console.log("->", this.imageFileName);
-    
+
     this.map = new google.maps.Map(this.mapElement.nativeElement, {
       zoom: 11,
       center: { lat: this.formmodel.indirizzo.lat, lng: this.formmodel.indirizzo.lon }
     });
 
 
-    console.log("-||********||--->", this.getcoordinates());
+    LOGGER.info("[initMap] coordinates:", this.getcoordinates());
 
 
     var position = new google.maps.LatLng(45.476548, 9.235040);
@@ -110,23 +113,7 @@ export class AnnuncioViewRicercaPage {
       fillColor: '#FF0000',
       fillOpacity: 0.35
     });
-
-
-    // var museumMarker = new google.maps.Marker({position: position, 
-    //   title: "Punto",
-    //   icon: image,
-    //   animation: google.maps.Animation.DROP
-    // });
-
     museumMarker.setMap(this.map);
-
-    // Marker({
-    //   position: position,
-    //   title: "Punto",
-    //   icon: image,
-    //   animation: google.maps.Animation.DROP
-    // });
-    // museumMarker.setMap(this.map);
   }
 
 
@@ -149,10 +136,13 @@ export class AnnuncioViewRicercaPage {
             this.rest.rimuoviAnnuncio(this.navParams.get("oggetto").id,this.utente)
               .subscribe(
                 data => {
-                  console.log('my data: ', data);
+                  LOGGER.info("[buttonTapped] my data: ", data);
 
                 },
-                error => this.errorMessage = <any>error);
+                error => {
+                  LOGGER.error("[buttonTapped]", error);
+                  this.errorMessage = <any>error
+                });
           }
         }
       ]

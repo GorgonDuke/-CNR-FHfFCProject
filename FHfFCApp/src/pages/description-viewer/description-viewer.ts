@@ -10,6 +10,10 @@ import { compareTwoStrings } from "string-similarity";
  * Ionic pages and navigation.
  */
 
+
+import { Logger, LogLevel } from 'ask-logger';
+const LOGGER = Logger.getLogger('DescriptionViewerPage')
+LOGGER.set_level(LogLevel.DEBUG)
 @Component({
   selector: 'page-description-viewer',
   templateUrl: 'description-viewer.html',
@@ -22,40 +26,30 @@ export class DescriptionViewerPage {
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public rest: WebServiceProvider) {
-    console.log("PARAMETRI : ",navParams.data.risultato);
-    
+    LOGGER.info("[constructor] Parameters : ",navParams.data.risultato);
     this.rest.getGeneric(navParams.data.risultato._id,navParams.data.risultato.collection_name).subscribe((res: any) => {
-
-      console.log("ECCO : ", res);
-      // this.generic = JSON.stringify(res, undefined,"\t");
-      // this.generic = this.syntaxHighlight(res.valore);
-
       for (let x in res.valore) {
         this.desc.push({ key: x.replace(new RegExp("_", 'g')," "), valore: res.valore[x] });
       }
-
       this.desc.sort((a, b) => {
         if (this.compare2String(a.key) < this.compare2String(b.key)) return 1;
         if (this.compare2String(a.key) > this.compare2String(b.key))return -1;
         return 0;
       });
-
-      console.log("ECCO : ", this.generic);
     });
-
-
   }
 
   compare2String( a : string) {
       return compareTwoStrings(a.toLowerCase(), "insegna;nome;ragione;sociale;descrizione");
   }
 
-  
+
 
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad DescriptionViewerPage');
+
   }
+
   syntaxHighlight(json) {
 
     json = JSON.stringify(json, undefined, 1);
